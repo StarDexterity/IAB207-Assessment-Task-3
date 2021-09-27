@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+{% block title %}Index{% endblock %}
+
+{% block content %}
+<div class="hero-image"
+style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url({{ url_for('static', filename='img/hero1.jpg') }}); height: 40vh;">
+<div class="container">
+    <div class="div-2"></div>
+    <div class="hero-text">
+        <h1>Create new event</h1>
+        <p>Step 1: Details</p>
+    </div>
+</div>
+</div>
+
+
+<div class="main-container">
+    <div class="container">
+        <div class="div-2"></div>
+        <form action="">
+            
+            <div class="div-1"></div>
+            
+            <div class="row">
+                
+                <div class="col-12 col-sm-4">
+                    <h4 class="mytitle">What?</h4>
+                    <div class="d-none d-sm-block">
+                        <p class="mylead">
+                            Tell us about the name, a brief description on what it is (who is playing, in what
+                            competition,
+                            etc.) and what type of sport.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-2"></div>
+                <!--gap-->
+                <div class="col-12 col-sm-6">
+                    <div class="form-group">
+                        <label for="name">Event Title<sup class="asterisk">*</sup></label>
+                        <input type="text" class="form-control" id="name">
+                    </div>
+                    <br>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="imagefile">Thumbnail image<sup class="asterisk">*</sup></label>
+                        <input type="file" class="form-control" id="imagefile" />
+                    </div>
+                    
+                    <br>
+                    <div class="form-group">
+                        <label for="description">Description<sup class="asterisk">*</sup></label>
+                        <textarea class="form-control" rows="5" id="des" style="resize: none;"></textarea>
+                    </div>
+                    <br>
+                    <label>Sport<sup class="asterisk">*</sup></label>
+                    <select class="form-select" aria-label="Default select example">
+                        <option selected>Choose an option</option>
+                        <option value="1">Soccer</option>
+                        <option value="2">Football</option>
+                        <option value="3">Netball</option>
+                        <option value="4">Basketball</option>
+                        <option value="5">Hockey</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="div-3"></div>
+            <hr>
+            <div class="div-3"></div>
+            
+            <div class="row">
+                <div class="col-12 col-sm-4">
+                    <h4 class="mytitle">When?</h4>
+                    <div class="d-none d-sm-block">
+                        <p class="mylead">
+                            Tell us when your event is planned to begin and end.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-2"></div>
+                <div class="col-12 col-sm-6">
+                    <div class="form-group">
+                        <label for="startdate">Starting date and time<sup class="asterisk">*</sup></label>
+                        <div class="row">
+                            <div class="col tight-right">
+                                <input type="text" class="form-control" id="startdate"
+                                placeholder="Date e.g. 1/01/2021">
+                            </div>
+                            <div class="col tight-left">
+                                <input type="text" class="form-control" id="starttime" placeholder="Time e.g. 12.00pm">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <br>
+                    <div class="form-group">
+                        <label for="enddate">Finishing date and time<sup class="asterisk">*</sup></label>
+                        <div class="row">
+                            <div class="col tight-right">
+                                <input type="text" class="form-control" id="enddate" placeholder="Date e.g. 1/01/2021">
+                            </div>
+                            <div class="col tight-left">
+                                <input type="text" class="form-control" id="endtime" placeholder="Time e.g. 12.00pm">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="div-3"></div>
+            <hr>
+            <div class="div-3"></div>
+            
+            <div class="row">
+                <div class="col-12 col-sm-4">
+                    <h4 class="mytitle">Where?</h4>
+                    <div class="d-none d-sm-block">
+                        <p class="mylead">
+                            Address and name of the venue where the event is being held.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-2"></div>
+                
+                <div class="col-12 col-sm-6">
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="venue">Venue Name</label>
+                        <input type="text" class="form-control" id="venue" />
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="strname">Street<sup class="asterisk">*</sup></label>
+                        <input type="text" class="form-control" id='strname' aria-label="Street name">
+                    </div>
+                    
+                    
+                    <div class="row">
+                        <div class="form-group col tight-right">
+                            <label for="city">City<sup class="asterisk">*</sup></label>
+                            <input type="text" class="form-control" id="city">
+                        </div>
+                        <div class="form-group col tight-left">
+                            <label for="state">State<sup class="asterisk">*</sup></label>
+                            <input type="text" class="form-control" id='state' aria-label="State">
+                        </div>
+                        
+                    </div>
+                    
+                    
+                    
+                </div>
+            </div>
+            
+            <div class="div-3"></div>
+            <hr>
+            <div class="div-3"></div>
+            
+            
+            <div class="row">
+                <div class="col-12 col-sm-4">
+                    <h4 class="mytitle">Other</h4>
+                </div>
+                <div class="col-12 col-sm-2"></div>
+                <div class="col-12 col-sm-6">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="status">Status<sup class="asterisk">*</sup></label>
+                                <select class="form-select" aria-label="Default select example" id="status">
+                                    <option selected>Choose an option</option>
+                                    <option value="1">Upcoming</option>
+                                    <option value="2">Inactive</option>
+                                    <option value="3">Booked</option>
+                                    <option value="4">Cancelled</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-5">
+                            <div class="form-group">
+                                <label for="notickets">no. tickets<sup class="asterisk">*</sup></label>
+                                <input type="number" class="form-control" min="0" id="notickets">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="div-3"></div>
+            <div class="float-right">
+                <button class="btn btn-primary">Cancel</button>
+                <button type="submit" class="btn btn-primary">Next</button>
+            </div>
+        </form>
+        
+        <div class="div-3"></div>
+        
+    </div>
+</div>
+{% endblock %}

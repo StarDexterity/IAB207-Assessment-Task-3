@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% block title %}Index{% endblock %}
+
+{% block content %}
+<div class="cover-image"
+  style="background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url({{ url_for('static', filename='img/cover.jpg') }});">
+
+  <div class="container hero-text-center">
+    <h1>Community driven event management</h1>
+    <div class="div-1"></div>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed suscipit ipsum quis sem interdum ultricies.
+      Mauris gravida mi nec ornare malesuada. Nullam porttitor enim ut nibh rhoncus semper. Cras eget dui id sapien
+      consequat laoreet. Vivamus metus mi, feugiat quis volutpat at, tristique in nibh. Aenean a lacinia ex, in
+      volutpat nulla. Pellentesque pretium sapien ac varius mattis. Nulla vitae tellus vitae nisi euismod pharetra
+      nec eget lorem. Nullam varius urna at diam dictum dapibus.</p>
+    <a href="{{ url_for('.create_event') }}">
+      <button type="button" class="btn btn-primary btn-lg">Create event</button>
+    </a>
+    <a href="#featured">
+      <button type="button" class="btn btn-primary btn-lg">Find an event</button>
+    </a>
+  </div>
+</div>
+
+
+<div class="container-fluid">
+  <div class="col-10 col-lg-8 mx-auto">
+
+    <div id="featured">
+      <div class="div-3"></div>
+      <h1 class="mytitle">
+        Featured
+      </h1>
+
+      <div id="carouselExampleCaptions" class="carousel slide my-carousel" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+          <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active"
+            aria-current="true" aria-label="Slide 1"></button>
+          <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1"
+            aria-label="Slide 2"></button>
+          <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2"
+            aria-label="Slide 3"></button>
+        </div>
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <a href="{{ url_for('.view_details') }}">
+              <img src="{{ url_for('static', filename='img/carousel1.jpg') }}" class="d-block w-100" alt="...">
+            </a>
+            <div class="carousel-caption">
+              <h5>Tornados vs Elphants</h5>
+              <p>Sed rhoncus leo quis ex.</p>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <a href="{{ url_for('.view_details') }}">
+              <img src="{{ url_for('static', filename='img/carousel2.jpg') }}" class="d-block w-100" alt="...">
+            </a>
+            <div class="carousel-caption">
+              <h5>Lions vs Reindeer</h5>
+              <p>Sed rhoncus leo quis ex.</p>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <a href="{{ url_for('.view_details') }}">
+              <img src="{{ url_for('static', filename='img/carousel1.jpg') }}" class="d-block w-100" alt="...">
+            </a>
+            <div class="carousel-caption">
+              <h5>Elves vs Angels</h5>
+              <p>Some representative placeholder content for the third slide.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="div-3"></div>
+
+    <div id="popular">
+
+      <h1 class="mytitle">Popular</h1>
+
+      <div class="row">
+        <div class="col-12 col-sm-6 col-lg-4 mb-3">
+          <div class="event-container">
+            <a href="{{ url_for('.view_details') }}">
+              <div class="img-container">
+                <img src="{{ url_for('static', filename='img/football1.jpg') }}">
+              </div>
+            </a>
+            <a href="{{ url_for('.view_details') }}" class="my-link">
+              <h4>Lorikeets vs Parrots</h4>
+            </a>
+            <p class="text-muted">Wednesday, June 9 - Suncorp Stadium - booked</p>
+            <p>Author: AESC</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eget mauris urna. Proin convallis lectus
+              vitae elit luctus mattis.</p>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-4 mb-3">
+          <div class="event-container">
+            <a href="{{ url_for('.view_details') }}">
+              <img src="{{ url_for('static', filename='img/football2.jpg') }}">
+            </a>
+            <a href="{{ url_for('.view_details') }}" class="my-link">
+              <h4>Lockyer lions vs Brisbane boars</h4>
+            </a>
+            <p class="text-muted">Wednesday, June 9 - Suncorp Stadium - Upcoming</p>
+            <p>Author: AESC</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eget mauris urna. Proin convallis lectus
+              vitae elit luctus mattis. Nullam ut tellus ut metus sodales pretium vitae in mauris.</p>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-4 mb-3">
+          <div class="event-container">
+            <a href="{{ url_for('.view_details') }}">
+              <img src="{{ url_for('static', filename='img/football3.jpg') }}">
+            </a>
+            <a href="{{ url_for('.view_details') }}" class="my-link">
+              <h4>Eagles vs Blue socks</h4>
+            </a>
+            <p class="text-muted">Wednesday, June 9 - Suncorp Stadium - Inactive</p>
+            <p>Author: AESC</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eget mauris urna. Consect ed dol moor.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
