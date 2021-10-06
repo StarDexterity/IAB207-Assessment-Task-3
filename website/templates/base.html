@@ -27,7 +27,7 @@
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-          <a class="navbar-brand" href="{{ url_for('.index') }}">MySports</a>
+          <a class="navbar-brand" href="{{ url_for('main.index') }}">MySports</a>
   
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll">
             <span class="navbar-toggler-icon"></span>
@@ -45,8 +45,8 @@
                   Welcome, Zachary
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                  <li><a class="dropdown-item" href="{{ url_for('.create_event') }}">Create an event</a></li>
-                  <li><a class="dropdown-item" href="{{ url_for('.booked_events') }}">View booked events</a></li>
+                  <li><a class="dropdown-item" href="{{ url_for('main.create_event') }}">Create an event</a></li>
+                  <li><a class="dropdown-item" href="{{ url_for('main.booked_events') }}">View booked events</a></li>
                   <li><a class="dropdown-item" href="#">Logout</a></li>
                 </ul>
               </li>
