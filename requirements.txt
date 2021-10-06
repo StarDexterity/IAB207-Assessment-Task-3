@@ -1,1 +1,4 @@
-Add requirements
+Flask
+Flask_login
+Captcha
+Flask-Bootstrap
