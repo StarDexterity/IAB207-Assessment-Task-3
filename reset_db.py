@@ -2,7 +2,7 @@
 # *** WARNING ***
 # All data from any pre-existing database will be lost
 # Note: 
-#   Small changes to db can be done from with db browser
+#   Small changes to db can be done from within db browser
 # Use with extreme caution
 from website import create_app, db
 
