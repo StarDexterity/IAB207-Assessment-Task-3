@@ -14,7 +14,7 @@ def create_app():
     app.debug=True
     app.secret_key='utroutoru'
     #set the app configuration data 
-    app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///sitedata.sqlite'
+    app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///sportdb.sqlite'
     #initialize db with flask app
     db.init_app(app)
 
