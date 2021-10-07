@@ -1,4 +1,7 @@
 Flask
 Flask_login
-Captcha
+Flask_Sqlalchemy
 Flask-Bootstrap
+Flask_wtf
+Captcha
+Wtforms
