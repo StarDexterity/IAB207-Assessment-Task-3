@@ -17,7 +17,7 @@ style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2))
 <div class="main-container">
     <div class="container">
         <div class="div-2"></div>
-        <form action="">
+        <form action="" method="post">
             
             <div class="div-1"></div>
             
@@ -37,24 +37,24 @@ style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2))
                 <!--gap-->
                 <div class="col-12 col-sm-6">
                     <div class="form-group">
-                        <label for="name">Event Title<sup class="asterisk">*</sup></label>
-                        <input type="text" class="form-control" id="name">
+                        <label for="title">Event Title<sup class="asterisk">*</sup></label>
+                        <input type="text" class="form-control" id="title" name="title">
                     </div>
                     <br>
                     
                     <div class="form-group">
-                        <label class="form-label" for="imagefile">Thumbnail image<sup class="asterisk">*</sup></label>
-                        <input type="file" class="form-control" id="imagefile" />
+                        <label class="form-label" for="image">Thumbnail image<sup class="asterisk">*</sup></label>
+                        <input type="file" class="form-control" id="image" name="image"/>
                     </div>
                     
                     <br>
                     <div class="form-group">
                         <label for="description">Description<sup class="asterisk">*</sup></label>
-                        <textarea class="form-control" rows="5" id="des" style="resize: none;"></textarea>
+                        <textarea class="form-control" rows="5" id="description" name="description" style="resize: none;"></textarea>
                     </div>
                     <br>
                     <label>Sport<sup class="asterisk">*</sup></label>
-                    <select class="form-select" aria-label="Default select example">
+                    <select class="form-select" id="sport" name="sport" aria-label="Default select example">
                         <option selected>Choose an option</option>
                         <option value="1">Soccer</option>
                         <option value="2">Football</option>
@@ -84,11 +84,10 @@ style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2))
                         <label for="startdate">Starting date and time<sup class="asterisk">*</sup></label>
                         <div class="row">
                             <div class="col tight-right">
-                                <input type="text" class="form-control" id="startdate"
-                                placeholder="Date e.g. 1/01/2021">
+                                <input type="date" class="form-control" id="startdate" name="start_date">
                             </div>
                             <div class="col tight-left">
-                                <input type="text" class="form-control" id="starttime" placeholder="Time e.g. 12.00pm">
+                                <input type="time" class="form-control" id="starttime" name="start_time">
                             </div>
                         </div>
                     </div>
@@ -98,10 +97,10 @@ style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2))
                         <label for="enddate">Finishing date and time<sup class="asterisk">*</sup></label>
                         <div class="row">
                             <div class="col tight-right">
-                                <input type="text" class="form-control" id="enddate" placeholder="Date e.g. 1/01/2021">
+                                <input type="date" class="form-control" id="enddate" name="end_date">
                             </div>
                             <div class="col tight-left">
-                                <input type="text" class="form-control" id="endtime" placeholder="Time e.g. 12.00pm">
+                                <input type="time" class="form-control" id="endtime" name="end_time">
                             </div>
                         </div>
                     </div>
@@ -127,23 +126,23 @@ style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2))
                     
                     <div class="form-group">
                         <label class="form-label" for="venue">Venue Name</label>
-                        <input type="text" class="form-control" id="venue" />
+                        <input type="text" class="form-control" id="venue" name="venue"/>
                     </div>
                     
                     <div class="form-group">
                         <label for="strname">Street<sup class="asterisk">*</sup></label>
-                        <input type="text" class="form-control" id='strname' aria-label="Street name">
+                        <input type="text" class="form-control" id='strname' name="street_name" aria-label="Street name">
                     </div>
                     
                     
                     <div class="row">
                         <div class="form-group col tight-right">
                             <label for="city">City<sup class="asterisk">*</sup></label>
-                            <input type="text" class="form-control" id="city">
+                            <input type="text" class="form-control" id="city" name="city">
                         </div>
                         <div class="form-group col tight-left">
                             <label for="state">State<sup class="asterisk">*</sup></label>
-                            <input type="text" class="form-control" id='state' aria-label="State">
+                            <input type="text" class="form-control" id='state' name="state" aria-label="State">
                         </div>
                         
                     </div>
@@ -168,7 +167,7 @@ style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2))
                         <div class="col-6">
                             <div class="form-group">
                                 <label for="status">Status<sup class="asterisk">*</sup></label>
-                                <select class="form-select" aria-label="Default select example" id="status">
+                                <select class="form-select" aria-label="Default select example" id="status" name="status">
                                     <option selected>Choose an option</option>
                                     <option value="1">Upcoming</option>
                                     <option value="2">Inactive</option>
@@ -179,8 +178,14 @@ style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2))
                         </div>
                         <div class="col-5">
                             <div class="form-group">
-                                <label for="notickets">no. tickets<sup class="asterisk">*</sup></label>
-                                <input type="number" class="form-control" min="0" id="notickets">
+                                <label for="notickets">Tickets available<sup class="asterisk">*</sup></label>
+                                <input type="number" class="form-control" min="0" id="notickets" name="tickets">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="notickets">Price<sup class="asterisk">*</sup></label>
+
+                                <input type="number" class="form-control" min="1" step="any" id="price" name="price">
                             </div>
                         </div>
                     </div>
@@ -188,8 +193,10 @@ style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2))
             </div>
             <div class="div-3"></div>
             <div class="float-right">
-                <button class="btn btn-primary">Cancel</button>
-                <button type="submit" class="btn btn-primary">Next</button>
+                <a href="{{ url_for('main.index') }}">
+                    <button class="btn btn-primary">Cancel</button>
+                </a>
+                <button type="submit" class="btn btn-primary">Submit</button>
             </div>
         </form>
         

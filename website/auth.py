@@ -6,6 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from .forms import LoginForm, RegisterForm
 from .models import User
 from flask_login import login_user, login_required, logout_user
+
 from . import db
 
 
@@ -17,7 +18,7 @@ bp = Blueprint('auth', __name__)
 def login():
     login_form = LoginForm()
     error = None
-    if login_form.validate_on_submit() == True:
+    if login_form.validate_on_submit():
         username = login_form.user_name.data
         password = login_form.password.data
 
@@ -33,6 +34,11 @@ def login():
             error = 'Incorrect password' 
         if error is None:
             login_user(u1)
+            next = request.args.get('next')
+
+            # redirects user to the page or resource they were trying to access
+            if next != None:
+                return redirect(next)
             return redirect(url_for('main.index'))
         else:
             print(error)

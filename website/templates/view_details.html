@@ -51,8 +51,14 @@
             <p>Upcoming</p>
           </div>
         </div>
+        {% if current_user.is_authenticated %}
         <button type="button" data-bs-toggle="modal" data-bs-target="#ticketmodal"
         class="btn btn-success float-right">Book ticket</button>
+        {% else %}
+        <form action="">
+          <button type="submit" class="btn btn-success float-right">Book ticket</button>
+        </form>
+        {% endif %}
       </div>
     </div>
     
