@@ -44,12 +44,12 @@
               <ul class="navbar-nav my-2 my-lg-0" >
                 <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Welcome, Zachary
+                  {{ current_user.user_name }}
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                   <li><a class="dropdown-item" href="{{ url_for('main.create_event') }}">Create an event</a></li>
                   <li><a class="dropdown-item" href="{{ url_for('main.booked_events') }}">View booked events</a></li>
-                  <li><a class="dropdown-item" href="#">Logout</a></li>
+                  <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
                 </ul>
                 {% else %}
                 <ul class="navbar-nav my-2 my-lg-0">

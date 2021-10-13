@@ -66,7 +66,8 @@ def register():
 
 @bp.route('/logout')
 def logout():
-    return '<p>Successfully logged user out</p>'
+    logout_user()
+    return '<p>Successfully logged out</p>'
 
 
 
