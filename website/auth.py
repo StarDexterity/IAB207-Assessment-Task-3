@@ -21,10 +21,10 @@ def login():
         username = login_form.user_name.data
         password = login_form.password.data
         # returns first match to username
-        u1:User = User.query.filter_by(name=username).first()
+        u1:User = User.query.filter_by(user_name=username).first()
         # if none error
         if u1 is None:
-            error = 'Incorrect username' # Leaks usernames?
+            error = 'Incorrect username'
         elif not check_password_hash(u1.password_hash, password):
             error = 'Incorrect password' 
         if error is None:
@@ -48,10 +48,13 @@ def register():
       uname =form.user_name.data
       pwd = form.password.data
       email=form.email_id.data
+      contact_number = form.phone_no.data
+      address = form.address.data
+
       
       pwd_hash = generate_password_hash(pwd)
       #create a new user model object
-      new_user = User(name=uname, password_hash=pwd_hash, emailid=email)
+      new_user = User(user_name=uname, password_hash=pwd_hash, email=email, contact_number=contact_number, address=address)
       db.session.add(new_user)
       db.session.commit()
       flash("Registered user successfully")

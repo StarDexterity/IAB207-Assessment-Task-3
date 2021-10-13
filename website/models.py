@@ -4,10 +4,10 @@ from flask_login import UserMixin
 
 class User(db.Model, UserMixin):
     __tablename__='users' # good practice to specify table name
-    id = db.Column(db.Integer, primary_key=True)
-    user_name = db.Column(db.String(20), index=True, unique=True, primary_key=True)
-    email = db.Column(db.String(100), index=True, unique=True, primary_key=True)
-    contact_number = db.Column(db.Integer, unique=True, index=True, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_name = db.Column(db.String(20), index=True, unique=True)
+    email = db.Column(db.String(100), index=True, unique=True)
+    contact_number = db.Column(db.Integer, unique=True, index=True)
     address = db.Column(db.String(100), index=True, nullable=False)
 	#password is never stored in the DB, an encrypted password is stored
 	# the storage should be at least 255 chars long
@@ -15,11 +15,12 @@ class User(db.Model, UserMixin):
 
     # relation to call user.comments and comment.created_by
     comments = db.relationship('Comment', backref='user')
+    #events = db.relationship('event', backref='user')
 
 
 
 class Event(db.Model):
-    __tablename__ = 'destinations'
+    __tablename__ = 'events'
     event_id = db.Column(db.Integer, primary_key=True)
     event_name = db.Column(db.String(80))
     description = db.Column(db.String(200))
@@ -31,16 +32,18 @@ class Event(db.Model):
     start_time = db.Column(db.DateTime())
     end_time = db.Column(db.DateTime())
 
-    email = db.Column(db.String(100), db.ForeignKey('users.email'))
-    contact_number = db.Column(db.Integer, db.ForeignKey('users.contact_number'))
+    #email = db.Column(db.String(100), db.ForeignKey('user.email'))
+    #contact_number = db.Column(db.Integer, db.ForeignKey('user.contact_number'))
+
     # ... Create the Comments db.relationship
 	# relation to call destination.comments and comment.destination
-    comments = db.relationship('Comment', backref='event')
+    #comments = db.relationship('Comment', backref='event')
 
     
 	
     def __repr__(self): #string print method
         return "<Name: {}>".format(self.name)
+
 
 class Comment(db.Model):
     __tablename__ = 'comments'
@@ -49,8 +52,7 @@ class Comment(db.Model):
     date_of_creation = db.Column(db.DateTime, default=datetime.now())
     #add the foreign keys
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    user_name = db.Column(db.String(100), db.ForeignKey('users.user_name'))
-    event_id = db.Column(db.Integer, db.ForeignKey('events.id'))
+    event_id = db.Column(db.Integer, db.ForeignKey('events.event_id'))
 
 
     def __repr__(self):
