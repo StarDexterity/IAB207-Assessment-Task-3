@@ -12,17 +12,20 @@ class LoginForm(FlaskForm):
     keep_loggedin = BooleanField("Stay logged in")
     submit = SubmitField("Login")
 
-def my_length_check(form, field):
+def username_length_check(form, field):
     if len(field.data) > 20:
         raise ValidationError('Username must be less than 20 characters')
 
+def phone_length_check(form, field):
+    if len(field.data) != 10:
+        raise ValidationError('Phone number must be 10 digits')
+
  # this is the registration form
 class RegisterForm(FlaskForm):
-    user_name=StringField("User Name", validators=[InputRequired(), my_length_check])
+    user_name=StringField("User Name", validators=[InputRequired("Please enter a username"), username_length_check])
     email_id = StringField("Email Address", validators=[Email("Please enter a valid email")])
 
-    phone_no = StringField('Phone number', validators=[InputRequired("Please enter a phone number")])
-    address = StringField('Address', validators=[InputRequired("Please enter an address")])
+    phone_no = StringField('Phone number', validators=[InputRequired("Please enter a phone number"), phone_length_check])
     
     #linking two fields - password should be equal to data entered in confirm
     password=PasswordField("Password", validators=[InputRequired(),
