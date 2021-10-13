@@ -1,4 +1,5 @@
-from flask import Blueprint, render_template, url_for
+from flask import Blueprint, render_template, url_for, session
+from flask_login import login_required
 
 bp = Blueprint('main', __name__)
 
@@ -8,6 +9,7 @@ def index():
     return render_template('index.html')
 
 @bp.route('/create-event')
+@login_required
 def create_event():
     return render_template('create_event.html')
 

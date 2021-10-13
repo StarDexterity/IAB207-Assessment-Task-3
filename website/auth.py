@@ -1,5 +1,5 @@
 from flask import (
-    Blueprint, flash, render_template, request, url_for, redirect
+    Blueprint, flash, render_template, request, url_for, redirect, session
 )
 from werkzeug.security import generate_password_hash, check_password_hash
 #from .models import User
@@ -20,6 +20,10 @@ def login():
     if login_form.validate_on_submit() == True:
         username = login_form.user_name.data
         password = login_form.password.data
+
+        if login_form.keep_loggedin.data:
+            session.permanent = True
+
         # returns first match to username
         u1:User = User.query.filter_by(user_name=username).first()
         # if none error
