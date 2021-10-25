@@ -1,28 +1,29 @@
 {% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
 {% block title %}Index{% endblock %}
 
 {% block content %}
 <div class="hero-image"
-style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url({{ url_for('static', filename='img/hero1.jpg') }}); height: 40vh;">
-<div class="container">
-    <div class="div-2"></div>
-    <div class="hero-text">
-        <h1>Create new event</h1>
-        <p>Step 1: Details</p>
+    style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url({{ url_for('static', filename='img/hero1.jpg') }}); height: 40vh;">
+    <div class="container">
+        <div class="div-2"></div>
+        <div class="hero-text">
+            <h1>Create new event</h1>
+            <p>Step 1: Details</p>
+        </div>
     </div>
-</div>
 </div>
 
 
 <div class="main-container">
     <div class="container">
         <div class="div-2"></div>
-        <form action="" method="post">
-            
+        <form action="" method="post" class="form">
+            {{ form.csrf_token()}}
             <div class="div-1"></div>
-            
+
             <div class="row">
-                
+
                 <div class="col-12 col-sm-4">
                     <h4 class="mytitle">What?</h4>
                     <div class="d-none d-sm-block">
@@ -37,38 +38,29 @@ style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2))
                 <!--gap-->
                 <div class="col-12 col-sm-6">
                     <div class="form-group">
-                        <label for="title">Event Title<sup class="asterisk">*</sup></label>
-                        <input type="text" class="form-control" id="title" name="title">
+                        {{ wtf.form_field(form.title, class='form-control')}}
                     </div>
                     <br>
-                    
+
                     <div class="form-group">
-                        <label class="form-label" for="image">Thumbnail image<sup class="asterisk">*</sup></label>
-                        <input type="file" class="form-control" id="image" name="image"/>
+                        {{ wtf.form_field(form.image, class='form-control')}}
                     </div>
-                    
+
                     <br>
                     <div class="form-group">
-                        <label for="description">Description<sup class="asterisk">*</sup></label>
-                        <textarea class="form-control" rows="5" id="description" name="description" style="resize: none;"></textarea>
+                        {{ wtf.form_field(form.description, class='form-control')}}
                     </div>
                     <br>
-                    <label>Sport<sup class="asterisk">*</sup></label>
-                    <select class="form-select" id="sport" name="sport" aria-label="Default select example">
-                        <option selected>Choose an option</option>
-                        <option value="1">Soccer</option>
-                        <option value="2">Football</option>
-                        <option value="3">Netball</option>
-                        <option value="4">Basketball</option>
-                        <option value="5">Hockey</option>
-                    </select>
+                    <div class="form-froup">
+                        {{ wtf.form_field(form.sport, class='form-select')}}
+                    </div>
                 </div>
             </div>
-            
+
             <div class="div-3"></div>
             <hr>
             <div class="div-3"></div>
-            
+
             <div class="row">
                 <div class="col-12 col-sm-4">
                     <h4 class="mytitle">When?</h4>
@@ -81,36 +73,34 @@ style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2))
                 <div class="col-12 col-sm-2"></div>
                 <div class="col-12 col-sm-6">
                     <div class="form-group">
-                        <label for="startdate">Starting date and time<sup class="asterisk">*</sup></label>
                         <div class="row">
                             <div class="col tight-right">
-                                <input type="date" class="form-control" id="startdate" name="start_date">
+                                {{ wtf.form_field(form.start_time, class='form-control', type='time')}}
                             </div>
                             <div class="col tight-left">
-                                <input type="time" class="form-control" id="starttime" name="start_time">
+                                {{ wtf.form_field(form.start_date, class='form-control', type='date')}}
                             </div>
                         </div>
                     </div>
-                    
+
                     <br>
                     <div class="form-group">
-                        <label for="enddate">Finishing date and time<sup class="asterisk">*</sup></label>
                         <div class="row">
                             <div class="col tight-right">
-                                <input type="date" class="form-control" id="enddate" name="end_date">
+                                {{ wtf.form_field(form.end_time, class='form-control', type='time')}}
                             </div>
                             <div class="col tight-left">
-                                <input type="time" class="form-control" id="endtime" name="end_time">
+                                {{ wtf.form_field(form.end_date, class='form-control', type='date')}}
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            
+
             <div class="div-3"></div>
             <hr>
             <div class="div-3"></div>
-            
+
             <div class="row">
                 <div class="col-12 col-sm-4">
                     <h4 class="mytitle">Where?</h4>
@@ -121,42 +111,42 @@ style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2))
                     </div>
                 </div>
                 <div class="col-12 col-sm-2"></div>
-                
+
                 <div class="col-12 col-sm-6">
-                    
+
                     <div class="form-group">
-                        <label class="form-label" for="venue">Venue Name</label>
-                        <input type="text" class="form-control" id="venue" name="venue"/>
+                        {{ wtf.form_field(form.venue, class='form-control')}}
                     </div>
-                    
+
                     <div class="form-group">
-                        <label for="strname">Street<sup class="asterisk">*</sup></label>
-                        <input type="text" class="form-control" id='strname' name="street_name" aria-label="Street name">
+                        {{ wtf.form_field(form.street, class='form-control')}}
                     </div>
-                    
-                    
+
+                    <div class="form-group">
+                        {{ wtf.form_field(form.city, class='form-control')}}
+                    </div>
+
                     <div class="row">
+
                         <div class="form-group col tight-right">
-                            <label for="city">City<sup class="asterisk">*</sup></label>
-                            <input type="text" class="form-control" id="city" name="city">
+                            {{ wtf.form_field(form.state, class='form-control')}}
                         </div>
+
                         <div class="form-group col tight-left">
-                            <label for="state">State<sup class="asterisk">*</sup></label>
-                            <input type="text" class="form-control" id='state' name="state" aria-label="State">
+                            {{ wtf.form_field(form.postcode, class='form-control')}}
                         </div>
-                        
                     </div>
-                    
-                    
-                    
+
+
+
                 </div>
             </div>
-            
+
             <div class="div-3"></div>
             <hr>
             <div class="div-3"></div>
-            
-            
+
+
             <div class="row">
                 <div class="col-12 col-sm-4">
                     <h4 class="mytitle">Other</h4>
@@ -166,26 +156,16 @@ style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2))
                     <div class="row">
                         <div class="col-6">
                             <div class="form-group">
-                                <label for="status">Status<sup class="asterisk">*</sup></label>
-                                <select class="form-select" aria-label="Default select example" id="status" name="status">
-                                    <option selected>Choose an option</option>
-                                    <option value="1">Upcoming</option>
-                                    <option value="2">Inactive</option>
-                                    <option value="3">Booked</option>
-                                    <option value="4">Cancelled</option>
-                                </select>
+                                {{ wtf.form_field(form.status, class='form-select')}}
                             </div>
                         </div>
                         <div class="col-5">
                             <div class="form-group">
-                                <label for="notickets">Tickets available<sup class="asterisk">*</sup></label>
-                                <input type="number" class="form-control" min="0" id="notickets" name="tickets">
+                                {{ wtf.form_field(form.tickets, class='form-control')}}
                             </div>
 
                             <div class="form-group">
-                                <label for="notickets">Price<sup class="asterisk">*</sup></label>
-
-                                <input type="number" class="form-control" min="1" step="any" id="price" name="price">
+                                {{ wtf.form_field(form.price, class='form-control')}}
                             </div>
                         </div>
                     </div>
@@ -199,9 +179,9 @@ style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2))
                 <button type="submit" class="btn btn-primary">Submit</button>
             </div>
         </form>
-        
+
         <div class="div-3"></div>
-        
+
     </div>
 </div>
 {% endblock %}

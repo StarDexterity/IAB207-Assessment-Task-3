@@ -1,7 +1,10 @@
-from flask import Blueprint, render_template, url_for, session, request
+from flask import Blueprint, render_template, url_for, session, request, flash, redirect
+from website import db
+from .models import Event
 from flask_login import login_required
+from datetime import datetime
 
-from website.forms import EventForm, TestForm
+from .forms import EventForm, TestForm
 
 bp = Blueprint('main', __name__)
 
@@ -14,9 +17,43 @@ def index():
 @login_required
 def create_event():
     form = EventForm()
-    if form.is_submitted():
-        print(request.form) # just for testing purposes
-    return render_template('create_event.html')
+    if form.validate_on_submit():
+        title = form.title.data
+        image = form.image.data
+        des = form.description.data
+        sport = form.sport.data
+
+        start_date = form.start_date.data
+        start_time = form.start_time.data
+
+        # merge date and time into a datetime object
+        start_datetime = datetime(start_date.year, start_date.month, start_date.day, start_time.hour, start_time.minute, start_time.second)
+
+        end_date = form.end_date.data
+        end_time = form.end_time.data
+        
+        # merge date and time into a datetime object
+        end_datetime = datetime(end_date.year, end_date.month, end_date.day, end_time.hour, end_time.minute, end_time.second)
+        venue = form.venue.data
+
+        # get address information from each input
+        street = form.street.data
+        city = form.city.data
+        state = form.state.data
+
+        # join address information into a single entry
+        addr = ','.join([street, city, state])
+
+        status = form.status.data
+        tickets = form.tickets.data
+        price = form.price.data
+
+        new_event = Event()
+        db.session.add(new_event)
+        db.session.commit()
+        flash("Registered event successfully")
+        return redirect(url_for('main.create_event'))
+    return render_template('create_event.html', form=form)
 
 # convenience method for testing things
 @bp.route('/test', methods=['GET', 'POST'])

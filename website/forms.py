@@ -1,7 +1,28 @@
-
 from flask_wtf import FlaskForm
-from wtforms.fields import TextAreaField,SubmitField, StringField, PasswordField, BooleanField, IntegerField, TimeField, DateField, FloatField
+from wtforms.fields import (
+    TextAreaField,SubmitField, StringField, PasswordField, 
+    BooleanField, IntegerField, TimeField, DateField, FloatField, SelectField
+)
 from wtforms.validators import InputRequired, Length, Email, EqualTo, ValidationError
+
+
+# list of sports used by the application
+sports = [
+    'Soccer',
+    'Football',
+    'Netball',
+    'Basketball',
+    'Hockey'    
+]
+
+# list of statuses used by the application
+# These might have to be relocated later to a more appropriate spot
+statuses = [
+    'Upcoming',
+    'Inactive',
+    'Booked',
+    'Cancelled'
+]
 
 
 #creates the login information
@@ -47,30 +68,30 @@ NOTE:
     title = StringField() >>> <input type="text" name="title"/>
 '''
 class EventForm(FlaskForm):
-    title = StringField()
-
-    image = StringField()
-
-    description = TextAreaField()
-
-    sport = IntegerField()
+    # title of the event, thumbnail/details image, a description of the event, and the sport the event is
+    title = StringField(validators=[InputRequired()])
+    image = StringField(validators=[InputRequired()])
+    description = TextAreaField(validators=[InputRequired(), Length(min=50)])
+    sport = SelectField(choices=sports, validators=[InputRequired()])
 
     # date and time information
-    start_time = TimeField()
-    start_date = DateField()
+    start_time = TimeField(validators=[InputRequired()])
+    start_date = DateField(validators=[InputRequired()])
     
-    end_time = TimeField()
-    end_date = DateField()
+    end_time = TimeField(validators=[InputRequired()])
+    end_date = DateField(validators=[InputRequired()])
 
-    # adress information
+    # address information
     venue = StringField()
-    street_name = StringField()
-    city = StringField()
-    state = StringField()
+    street = StringField(validators=[InputRequired()])
+    city = StringField(validators=[InputRequired()])
+    state = StringField(validators=[InputRequired()])
+    postcode = StringField(validators=[InputRequired()])
 
-    status = IntegerField()
-    tickets = IntegerField()
-    price = FloatField()
+    status = SelectField(choices=statuses, validators=[InputRequired()])
+    tickets = IntegerField(validators=[InputRequired()])
+    price = FloatField(validators=[InputRequired()])
+
 
 
 # misc test form

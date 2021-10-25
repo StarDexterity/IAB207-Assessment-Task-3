@@ -20,17 +20,19 @@ class User(db.Model, UserMixin):
 
 class Event(db.Model):
     __tablename__ = 'events'
-    event_id = db.Column(db.Integer, primary_key=True)
+    event_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     event_name = db.Column(db.String(80))
-    description = db.Column(db.String(200))
-    sport_type = db.Column(db.String(10))
+    description = db.Column(db.String(2000))
+    sport_type = db.Column(db.String(20))
     image = db.Column(db.String(400))
-    status = db.Column(db.String(10))
-    address = db.Column(db.String(50))
+    address = db.Column(db.String(100))
 
     start_time = db.Column(db.DateTime())
     end_time = db.Column(db.DateTime())
 
+    status = db.Column(db.String(15))
+    tickets = db.Column(db.Float())
+    price = db.Column(db.Float())
     #email = db.Column(db.String(100), db.ForeignKey('user.email'))
     #contact_number = db.Column(db.Integer, db.ForeignKey('user.contact_number'))
 
