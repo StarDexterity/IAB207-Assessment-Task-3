@@ -76,5 +76,6 @@ def register():
 @bp.route('/logout')
 def logout():
     logout_user()
-    return '<p>Successfully logged out</p>'
+    flash("Logout successfully")
+    return redirect(url_for("main.index"))
 
