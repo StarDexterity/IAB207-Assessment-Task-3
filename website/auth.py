@@ -39,6 +39,8 @@ def login():
             # redirects user to the page or resource they were trying to access
             if next != None:
                 return redirect(next)
+
+
             return redirect(url_for('main.index'))
         else:
             print(error)
@@ -55,6 +57,7 @@ def register():
     if form.validate_on_submit():
         print('Register form submitted')
        
+<<<<<<< HEAD
         #get username, password and email from the form
         uname =form.user_name.data
         pwd = form.password.data
@@ -79,9 +82,12 @@ def register():
             db.session.add(new_user)
             db.session.commit()
             flash("Registered user successfully")
-            return redirect(url_for('auth.register'))
+            return redirect(url_for('auth.login'))
         else:
             flash(error)
+=======
+
+>>>>>>> df2a68c64391637896597798d35a2e842ee98a5e
        
     return render_template('user.html', form=form, heading='Register')
 
