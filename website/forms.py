@@ -38,10 +38,8 @@ def username_length_check(form, field):
         raise ValidationError('Username must be less than 20 characters')
 
 def phone_length_check(form, field):
-    #if len(field.data) != 10:
-    #    raise ValidationError('Phone number must be 10 digits')
-    # !!! sorry for commenting out, just having trouble with this code
-    pass
+    if len(field.data) != 10:
+        raise ValidationError('Phone number must be 10 digits')
 
  # this is the registration form
 class RegisterForm(FlaskForm):

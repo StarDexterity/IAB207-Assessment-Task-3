@@ -50,27 +50,42 @@ def login():
 
 @bp.route('/register', methods = ['GET', 'POST'])  
 def register():  
-  #create the form
+    error = None
+    #create the form
     form = RegisterForm()
     #this line is called when the form - POST
     if form.validate_on_submit():
-      print('Register form submitted')
+        print('Register form submitted')
        
-      #get username, password and email from the form
-      uname =form.user_name.data
-      pwd = form.password.data
-      email=form.email_id.data
-      contact_number = form.phone_no.data
 
-      
-      pwd_hash = generate_password_hash(pwd)
-      #create a new user model object
-      new_user = User(user_name=uname, password_hash=pwd_hash, email=email, contact_number=contact_number)
-      db.session.add(new_user)
-      db.session.commit()
-      flash("Registered user successfully")
-      return redirect(url_for('auth.login'))
-       
+        #get username, password and email from the form
+        uname =form.user_name.data
+        pwd = form.password.data
+        email=form.email_id.data
+        contact_number = form.phone_no.data
+
+        u1:User = User.query.filter_by(user_name=uname).first()
+        e1:User = User.query.filter_by(email=email).first()
+        c1:User = User.query.filter_by(contact_number=contact_number).first()
+
+        if u1 is not None:
+            error = 'Username taken'
+        elif e1 is not None:
+            error = 'Email taken'
+        elif c1 is not None:
+            error = 'Phone number taken'
+
+        if error is None:
+            pwd_hash = generate_password_hash(pwd)
+            #create a new user model object
+            new_user = User(user_name=uname, password_hash=pwd_hash, email=email, contact_number=contact_number)
+            db.session.add(new_user)
+            db.session.commit()
+            flash("Registered user successfully")
+            return redirect(url_for('auth.login'))
+        else:
+            flash(error)
+
     return render_template('user.html', form=form, heading='Register')
 
 
