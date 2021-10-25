@@ -57,7 +57,7 @@ def register():
     if form.validate_on_submit():
         print('Register form submitted')
        
-<<<<<<< HEAD
+
         #get username, password and email from the form
         uname =form.user_name.data
         pwd = form.password.data
@@ -85,10 +85,7 @@ def register():
             return redirect(url_for('auth.login'))
         else:
             flash(error)
-=======
 
->>>>>>> df2a68c64391637896597798d35a2e842ee98a5e
-       
     return render_template('user.html', form=form, heading='Register')
 
 
