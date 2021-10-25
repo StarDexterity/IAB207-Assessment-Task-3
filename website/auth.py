@@ -39,6 +39,8 @@ def login():
             # redirects user to the page or resource they were trying to access
             if next != None:
                 return redirect(next)
+
+
             return redirect(url_for('main.index'))
         else:
             print(error)
@@ -67,7 +69,7 @@ def register():
       db.session.add(new_user)
       db.session.commit()
       flash("Registered user successfully")
-      return redirect(url_for('auth.register'))
+      return redirect(url_for('auth.login'))
        
     return render_template('user.html', form=form, heading='Register')
 
