@@ -40,15 +40,17 @@ def create_event():
         street = form.street.data
         city = form.city.data
         state = form.state.data
+        postcode = form.postcode.data
 
         # join address information into a single entry
-        addr = ','.join([street, city, state])
+        addr = ','.join([street, city, postcode, state])
 
         status = form.status.data
         tickets = form.tickets.data
         price = form.price.data
 
-        new_event = Event()
+        new_event = Event(title=title, image=image, description=des, sport=sport, venue=venue, address=addr, 
+            start_time=start_datetime, end_time=end_datetime, status=status, tickets=tickets, price=price)
         db.session.add(new_event)
         db.session.commit()
         flash("Registered event successfully")
