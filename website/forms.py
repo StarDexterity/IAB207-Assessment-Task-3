@@ -1,9 +1,12 @@
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileField
 from wtforms.fields import (
     TextAreaField,SubmitField, StringField, PasswordField, 
-    BooleanField, IntegerField, TimeField, DateField, FloatField, SelectField
+    BooleanField, IntegerField, TimeField, DateField, 
+    FloatField, SelectField
 )
 from wtforms.validators import InputRequired, Length, Email, EqualTo, ValidationError
+from wtforms.widgets.core import Input
 
 
 # list of sports used by the application
@@ -68,8 +71,8 @@ NOTE:
 class EventForm(FlaskForm):
     # title of the event, thumbnail/details image, a description of the event, and the sport the event is
     title = StringField(validators=[InputRequired()])
-    image = StringField(validators=[InputRequired()])
-    description = TextAreaField(validators=[InputRequired(), Length(min=50)])
+    image = FileField(validators=[])
+    description = TextAreaField(validators=[])
     sport = SelectField(choices=sports, validators=[InputRequired()])
 
     # date and time information

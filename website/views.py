@@ -1,17 +1,34 @@
-from flask import Blueprint, render_template, url_for, session, request, flash, redirect
-from website import db
-from .models import Event
-from flask_login import login_required
+import os
 from datetime import datetime
 
+from flask import Blueprint
+from flask import send_from_directory
+from flask import current_app as app
+from flask import flash, redirect, render_template, request, session, url_for
+from flask_login import current_user, login_required
+from werkzeug.utils import secure_filename
+
+from website import ALLOWED_EXTENSIONS, db
+
 from .forms import EventForm, TestForm
+from .models import Event
 
 bp = Blueprint('main', __name__)
 
+# checks if filename has an allowed file extension
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @bp.route('/')
 def index():
     return render_template('index.html')
+
+# serves images from uploads folder
+# use 'url_for("download", filename=name)' in html to use this function
+@bp.route('/uploads/<filename>')
+def download(filename):
+    return send_from_directory(os.path.join(app.root_path, app.config["UPLOAD_FOLDER"]), filename)
 
 @bp.route('/create-event', methods=['GET', 'POST'])
 @login_required
@@ -19,7 +36,6 @@ def create_event():
     form = EventForm()
     if form.validate_on_submit():
         title = form.title.data
-        image = form.image.data
         des = form.description.data
         sport = form.sport.data
 
@@ -49,9 +65,22 @@ def create_event():
         tickets = form.tickets.data
         price = form.price.data
 
-        new_event = Event(title=title, image=image, description=des, sport=sport, venue=venue, address=addr, 
-            start_time=start_datetime, end_time=end_datetime, status=status, tickets=tickets, price=price)
+        user_id = current_user.user_id
+
+        new_event = Event(title=title, description=des, sport=sport, venue=venue, address=addr, 
+            start_time=start_datetime, end_time=end_datetime, status=status, 
+            tickets=tickets, price=price, user_id=user_id)
         db.session.add(new_event)
+
+        # checks for image file and authenticates it
+        image_file = form.image.data
+        if (image_file and allowed_file(image_file.filename)):
+            filename = secure_filename(image_file.filename)
+            path = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'], filename)
+            image_file.save(path)
+            new_event.image = filename
+
+        # commit database changes    
         db.session.commit()
         flash("Registered event successfully")
         return redirect(url_for('main.create_event'))

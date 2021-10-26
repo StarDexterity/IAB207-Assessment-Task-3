@@ -5,13 +5,19 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 
 db = SQLAlchemy()
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+UPLOAD_FOLDER = 'static\\img\\uploaded'
+
 
 #create a function that creates a web application
 # a web server will run this web application
 def create_app():
-    
     app=Flask(__name__)  # this is the name of the module/package that is calling this app
     app.debug=True
+    # sets the path of uploaded images
+    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+    # sets max upload size to 16 megabytes
+    app.config['MAX_CONTENT_LENGTH'] = 16 * 1000 * 1000
     
     app.secret_key='utroutoru' # secret key (Maybe move to .env in the future)
     #set the app configuration data 

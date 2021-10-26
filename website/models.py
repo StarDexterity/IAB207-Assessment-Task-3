@@ -4,7 +4,7 @@ from flask_login import UserMixin
 
 class User(db.Model, UserMixin):
     __tablename__='users' # good practice to specify table name
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_name = db.Column(db.String(20), index=True, unique=True)
     email = db.Column(db.String(100), index=True, unique=True)
     contact_number = db.Column(db.Integer, unique=True, index=True)
@@ -12,9 +12,14 @@ class User(db.Model, UserMixin):
 	# the storage should be at least 255 chars long
     password_hash = db.Column(db.String(255), nullable=False)
 
-    # relation to call user.comments and comment.created_by
-    comments = db.relationship('Comment', backref='user')
-    #events = db.relationship('event', backref='user')
+    # relation to users comments
+    comments = db.relationship('Comment')
+
+    # relation to users events
+    events = db.relationship('Event')
+
+    def get_id(self):
+        return (self.user_id)
 
 
 
@@ -34,6 +39,9 @@ class Event(db.Model):
     status = db.Column(db.String(15))
     tickets = db.Column(db.Integer())
     price = db.Column(db.Float())
+
+    user_id = db.Column(db.Integer(), db.ForeignKey('users.user_id'))
+
     #email = db.Column(db.String(100), db.ForeignKey('user.email'))
     #contact_number = db.Column(db.Integer, db.ForeignKey('user.contact_number'))
 
@@ -53,7 +61,7 @@ class Comment(db.Model):
     comment_text = db.Column(db.String(400))
     date_of_creation = db.Column(db.DateTime, default=datetime.now())
     #add the foreign keys
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
     event_id = db.Column(db.Integer, db.ForeignKey('events.event_id'))
 
 

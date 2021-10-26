@@ -18,7 +18,7 @@
 <div class="main-container">
     <div class="container">
         <div class="div-2"></div>
-        <form action="" method="post" class="form">
+        <form action="" method="post" class="form" enctype="multipart/form-data">
             {{ form.csrf_token()}}
             <div class="div-1"></div>
 
@@ -43,7 +43,7 @@
                     <br>
 
                     <div class="form-group">
-                        {{ wtf.form_field(form.image, class='form-control')}}
+                        {{ wtf.form_field(form.image, class='form-control', type='file')}}
                     </div>
 
                     <br>
