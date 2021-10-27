@@ -50,6 +50,9 @@ def create_app():
 
     from . import auth
     app.register_blueprint(auth.bp)
+
+    from . import error
+    app.register_blueprint(error.er)
     
     return app
 

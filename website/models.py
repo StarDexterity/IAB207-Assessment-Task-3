@@ -1,7 +1,7 @@
 from . import db
 from datetime import datetime
 from flask_login import UserMixin
-
+    
 class User(db.Model, UserMixin):
     __tablename__='users' # good practice to specify table name
     user_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -20,6 +20,10 @@ class User(db.Model, UserMixin):
 
     def get_id(self):
         return (self.user_id)
+
+    @property
+    def username(self):
+        return self.user_name
 
 
 
@@ -42,6 +46,10 @@ class Event(db.Model):
 
     user_id = db.Column(db.Integer(), db.ForeignKey('users.user_id'))
 
+    @property
+    def user(self) -> User:
+        return User.query.filter_by(user_id=self.user_id).first()
+
     #email = db.Column(db.String(100), db.ForeignKey('user.email'))
     #contact_number = db.Column(db.Integer, db.ForeignKey('user.contact_number'))
 
@@ -52,7 +60,7 @@ class Event(db.Model):
     
 	
     def __repr__(self): #string print method
-        return "<Name: {}>".format(self.name)
+        return "<Name: {}>".format(self.title)
 
 
 class Comment(db.Model):

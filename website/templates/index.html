@@ -7,8 +7,8 @@
   {% if messages %}
   {% for message in get_flashed_messages() %}
   <div class="alert alert-warning">
-      <button type="button" class="close" data-dismiss="alert" aria-label="close">x</button>
-      {{message}}
+    <button type="button" class="close" data-dismiss="alert" aria-label="close">x</button>
+    {{message}}
   </div>
   {% endfor %}
   {% endif %}
@@ -22,11 +22,10 @@
   <div class="container hero-text-center">
     <h1>Community driven event management</h1>
     <div class="div-1"></div>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed suscipit ipsum quis sem interdum ultricies.
-      Mauris gravida mi nec ornare malesuada. Nullam porttitor enim ut nibh rhoncus semper. Cras eget dui id sapien
-      consequat laoreet. Vivamus metus mi, feugiat quis volutpat at, tristique in nibh. Aenean a lacinia ex, in
-      volutpat nulla. Pellentesque pretium sapien ac varius mattis. Nulla vitae tellus vitae nisi euismod pharetra
-      nec eget lorem. Nullam varius urna at diam dictum dapibus.</p>
+    <p>MySports platform was developed out of a need for a one-stop place to find tickets to sporting events all around
+      the world. We work as a team to get you to the sideline, enjoying the sports you love. That we love. Through our
+      shared passion for all things sporting we hope to give ubiquitous access to the games around you, wether they are
+      Grand Finals or community games. Mysports, your sports, our-sports.</p>
     <a href="{{ url_for('.create_event') }}">
       <button type="button" class="btn btn-primary btn-lg">Create event</button>
     </a>
@@ -95,53 +94,25 @@
       <h1 class="mytitle">Popular</h1>
 
       <div class="row">
+        {% for event in events %}
         <div class="col-12 col-sm-6 col-lg-4 mb-3">
           <div class="event-container">
             <a href="{{ url_for('.view_details') }}">
               <div class="img-container">
-                <img src="{{ url_for('static', filename='img/football1.jpg') }}">
+                <img src="{{ url_for('.download', filename=event.image) }}">
               </div>
             </a>
             <a href="{{ url_for('.view_details') }}" class="my-link">
-              <h4>Lorikeets vs Parrots</h4>
+              <h4>{{ event.title }}</h4>
             </a>
-            <p class="text-muted">Wednesday, June 9 - Suncorp Stadium - booked</p>
-            <p>Author: AESC</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eget mauris urna. Proin convallis lectus
-              vitae elit luctus mattis.</p>
+            <p class="text-muted">{{ misc.get_day(event.start_time.weekday()) }}, {{ event.start_time.day}}
+              {{misc.get_month(event.start_time.month - 1)}} - {{ event.venue }} - {{event.status}}</p>
+              <p>{{event.description }}</p>
+              <p>By {{ event.user.username }}</p>
           </div>
         </div>
-
-        <div class="col-12 col-sm-6 col-lg-4 mb-3">
-          <div class="event-container">
-            <a href="{{ url_for('.view_details') }}">
-              <img src="{{ url_for('static', filename='img/football2.jpg') }}">
-            </a>
-            <a href="{{ url_for('.view_details') }}" class="my-link">
-              <h4>Lockyer lions vs Brisbane boars</h4>
-            </a>
-            <p class="text-muted">Wednesday, June 9 - Suncorp Stadium - Upcoming</p>
-            <p>Author: AESC</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eget mauris urna. Proin convallis lectus
-              vitae elit luctus mattis. Nullam ut tellus ut metus sodales pretium vitae in mauris.</p>
-          </div>
-        </div>
-
-        <div class="col-12 col-sm-6 col-lg-4 mb-3">
-          <div class="event-container">
-            <a href="{{ url_for('.view_details') }}">
-              <img src="{{ url_for('static', filename='img/football3.jpg') }}">
-            </a>
-            <a href="{{ url_for('.view_details') }}" class="my-link">
-              <h4>Eagles vs Blue socks</h4>
-            </a>
-            <p class="text-muted">Wednesday, June 9 - Suncorp Stadium - Inactive</p>
-            <p>Author: AESC</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eget mauris urna. Consect ed dol moor.</p>
-          </div>
-        </div>
+        {% endfor %}
       </div>
-    </div>
     </div>
   </div>
 </div>

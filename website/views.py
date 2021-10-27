@@ -7,11 +7,14 @@ from flask import current_app as app
 from flask import flash, redirect, render_template, request, session, url_for
 from flask_login import current_user, login_required
 from werkzeug.utils import secure_filename
+from werkzeug.exceptions import NotFound
 
 from website import ALLOWED_EXTENSIONS, db
 
 from .forms import EventForm, TestForm
 from .models import Event
+
+from . import misc
 
 bp = Blueprint('main', __name__)
 
@@ -22,13 +25,20 @@ def allowed_file(filename):
 
 @bp.route('/')
 def index():
-    return render_template('index.html')
+    events = Event.query.all()
+    ev:Event = events[0]
+    return render_template('index.html', misc=misc, events=events)
 
 # serves images from uploads folder
 # use 'url_for("download", filename=name)' in html to use this function
 @bp.route('/uploads/<filename>')
 def download(filename):
-    return send_from_directory(os.path.join(app.root_path, app.config["UPLOAD_FOLDER"]), filename)
+    # this try catch does not work  
+    try:
+        return send_from_directory(os.path.join(app.root_path, app.config["UPLOAD_FOLDER"]), filename)
+    except NotFound as nf:
+        print('file with filename {} was not found', filename)
+    
 
 @bp.route('/create-event', methods=['GET', 'POST'])
 @login_required
@@ -44,7 +54,6 @@ def create_event():
 
         # merge date and time into a datetime object
         start_datetime = datetime(start_date.year, start_date.month, start_date.day, start_time.hour, start_time.minute, start_time.second)
-
         end_date = form.end_date.data
         end_time = form.end_time.data
         
