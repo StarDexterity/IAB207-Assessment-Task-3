@@ -52,8 +52,8 @@ class RegisterForm(FlaskForm):
     phone_no = StringField('Phone number', validators=[InputRequired("Please enter a phone number"), phone_length_check])
     
     #linking two fields - password should be equal to data entered in confirm
-    password=PasswordField("Password", validators=[InputRequired()])
-    confirm = PasswordField("Confirm Password", EqualTo('password', message="Passwords should match"))
+    password=PasswordField("Password", validators=[InputRequired(), EqualTo('confirm', message="Passwords should match")])
+    confirm = PasswordField("Confirm Password")
 
     #submit button
     submit = SubmitField("Register")
@@ -92,6 +92,8 @@ class EventForm(FlaskForm):
     tickets = IntegerField(validators=[InputRequired()])
     price = FloatField(validators=[InputRequired()])
 
+class CommentForm(FlaskForm):
+    text = TextAreaField(validators=[InputRequired()])
 
 
 # misc test form

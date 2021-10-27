@@ -5,14 +5,14 @@ from flask import Blueprint
 from flask import send_from_directory
 from flask import current_app as app
 from flask import flash, redirect, render_template, request, session, url_for
-from flask_login import current_user, login_required
+from flask_login import current_user, login_required, login_url 
+import flask_login
 from werkzeug.utils import secure_filename
 from werkzeug.exceptions import NotFound
 
 from website import ALLOWED_EXTENSIONS, db
-
-from .forms import EventForm, TestForm
-from .models import Event
+from .forms import EventForm, TestForm, CommentForm
+from .models import Event, Comment
 
 from . import misc
 
@@ -37,7 +37,8 @@ def download(filename):
     try:
         return send_from_directory(os.path.join(app.root_path, app.config["UPLOAD_FOLDER"]), filename)
     except NotFound as nf:
-        print('file with filename {} was not found', filename)
+        print('file with filename %s was not found', filename)
+        return 'Resource not found'
     
 
 @bp.route('/create-event', methods=['GET', 'POST'])
@@ -109,6 +110,15 @@ def booked_events():
     return render_template('booked_events.html')
 
 
-@bp.route('/view-details')
-def view_details():
-    return render_template('view_details.html')
+@bp.route('/view-details/<event_id>', methods=['GET', 'POST'])
+def view_details(event_id):
+    event = Event.query.filter_by(event_id=event_id).first()
+    form = CommentForm()
+    if form.validate_on_submit():
+        text = form.text.data
+        user_id = current_user.user_id
+        new_comment = Comment(text=text, user_id=user_id, event_id=event_id)
+        db.session.add(new_comment)
+        db.session.commit()
+        return redirect(url_for('main.view_details', event_id=event_id))
+    return render_template('view_details.html', event=event, form=form)

@@ -1,8 +1,9 @@
 #import flask - from the package import class
-from flask import Flask 
+from flask import Flask, flash, redirect, url_for, request
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager
+from flask_login import LoginManager, login_manager
+
 
 db = SQLAlchemy()
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
@@ -43,6 +44,13 @@ def create_app():
     def load_user(user_id):
         return User.query.get(int(user_id))
 
+    # overides default login required exception handler
+    @login_manager.unauthorized_handler
+    def handle_needs_login():
+        flash("You have to be logged in to access this page.")
+        next=url_for(request.endpoint,**request.view_args)
+        return redirect(url_for('auth.login', next=next))
+
     #importing views module here to avoid circular references
     # a commonly used practice.
     from . import views
@@ -53,8 +61,11 @@ def create_app():
 
     from . import error
     app.register_blueprint(error.er)
+
+    
     
     return app
+
 
 
 

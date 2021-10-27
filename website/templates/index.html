@@ -56,8 +56,8 @@
         </div>
         <div class="carousel-inner">
           <div class="carousel-item active">
-            <a href="{{ url_for('.view_details') }}">
-              <img src="{{ url_for('static', filename='img/carousel1.jpg') }}" class="d-block w-100" alt="...">
+            <a href="">
+              <img src="" class="d-block w-100" alt="...">
             </a>
             <div class="carousel-caption">
               <h5>Tornados vs Elphants</h5>
@@ -65,7 +65,7 @@
             </div>
           </div>
           <div class="carousel-item">
-            <a href="{{ url_for('.view_details') }}">
+            <a href="">
               <img src="{{ url_for('static', filename='img/carousel2.jpg') }}" class="d-block w-100" alt="...">
             </a>
             <div class="carousel-caption">
@@ -74,7 +74,7 @@
             </div>
           </div>
           <div class="carousel-item">
-            <a href="{{ url_for('.view_details') }}">
+            <a href="">
               <img src="{{ url_for('static', filename='img/carousel1.jpg') }}" class="d-block w-100" alt="...">
             </a>
             <div class="carousel-caption">
@@ -97,12 +97,12 @@
         {% for event in events %}
         <div class="col-12 col-sm-6 col-lg-4 mb-3">
           <div class="event-container">
-            <a href="{{ url_for('.view_details') }}">
+            <a href="{{ url_for('.view_details', event_id=event.event_id) }}">
               <div class="img-container">
                 <img src="{{ url_for('.download', filename=event.image) }}">
               </div>
             </a>
-            <a href="{{ url_for('.view_details') }}" class="my-link">
+            <a href="{{ url_for('.view_details', event_id=event.event_id) }}" class="my-link">
               <h4>{{ event.title }}</h4>
             </a>
             <p class="text-muted">{{ misc.get_day(event.start_time.weekday()) }}, {{ event.start_time.day}}

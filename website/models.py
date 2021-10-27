@@ -46,6 +46,10 @@ class Event(db.Model):
 
     user_id = db.Column(db.Integer(), db.ForeignKey('users.user_id'))
 
+    # relation to users comments
+    comments = db.relationship('Comment')
+
+
     @property
     def user(self) -> User:
         return User.query.filter_by(user_id=self.user_id).first()
@@ -65,13 +69,20 @@ class Event(db.Model):
 
 class Comment(db.Model):
     __tablename__ = 'comments'
-    comment_id = db.Column(db.Integer, primary_key=True)
-    comment_text = db.Column(db.String(400))
+    comment_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    text = db.Column(db.String(400))
     date_of_creation = db.Column(db.DateTime, default=datetime.now())
     #add the foreign keys
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
     event_id = db.Column(db.Integer, db.ForeignKey('events.event_id'))
 
+    @property
+    def user(self) -> User:
+        return User.query.filter_by(user_id=self.user_id).first()
+
+    @property
+    def user(self) -> Event:
+        return Event.query.filter_by(event_id=self.event_id).first()
 
     def __repr__(self):
         return "<Comment: {}>".format(self.text)

@@ -1,5 +1,8 @@
 {% extends "base.html" %}
 {% block title %}Index{% endblock %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+
 
 {% block content %}
 <div class="div-3"></div>
@@ -7,11 +10,11 @@
   <div class="col col-md-8 mx-auto">
     <div class="row">
       <div class="col-lg-7">
-        <img class="image-centered" src="{{ url_for('static', filename='img/football3.jpg') }}">
+        <img class="image-centered" src="{{ url_for('.download', filename=event.image) }}">
       </div>
       <div class="col-lg-5">
         <div class="centered">
-          <h4>State of origin game 1</h4>
+          <h4>{{ event.title }}</h4>
           <p class="mylead text-muted">SUNCORP STADIUM - BRISBANE 2021</p>
         </div>
         <div class="row">
@@ -19,7 +22,7 @@
             <p>Location:</p>
           </div>
           <div class="col">
-            <p>40 Castlemaine St, Milt QLD 4064</p>
+            <p>{{ event.address }}</p>
           </div>
         </div>
         <div class="row">
@@ -28,7 +31,7 @@
           </div>
           <div class="col">
             <p>Wednesday, June 9</p>
-            <p>7:00pm - 10:00pm</p>
+            <p>{{ event.start_time.strftime("%I:%M %p") }} - {{ event.end_time.strftime("%I:%M %p") }}</p>
           </div>
         </div>
         
@@ -39,7 +42,7 @@
             <p>Price:</p>
           </div>
           <div class="col">
-            <p>A$89.95 - A$119.95</p>
+            <p>${{ event.price }}</p>
           </div>
         </div>
         
@@ -48,15 +51,16 @@
             <p>Status:</p>
           </div>
           <div class="col">
-            <p>Upcoming</p>
+            <p>{{ event.status }}</p>
           </div>
         </div>
         {% if current_user.is_authenticated %}
         <button type="button" data-bs-toggle="modal" data-bs-target="#ticketmodal"
         class="btn btn-success float-right">Book ticket</button>
         {% else %}
-        <form action="">
-          <button type="submit" class="btn btn-success float-right">Book ticket</button>
+        <form action="{{ url_for('auth.login', next=url_for(request.endpoint,**request.view_args)) }}" method="post">
+          {{ form.csrf_token()}}
+          <button type="submit" class="btn btn-success float-right">Login to book ticket</button>
         </form>
         {% endif %}
       </div>
@@ -71,47 +75,7 @@
     <div class="div-2"></div>
     
     <p>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam rhoncus et velit eget vulputate. Duis magna
-      diam, laoreet at odio in, commodo pulvinar velit. Donec convallis tincidunt dui quis porttitor. In tristique,
-      orci in sagittis sagittis, est sapien sagittis enim, non mollis quam elit vel odio. In a mi mauris. Mauris id
-      urna tellus. Donec tempus erat ut suscipit posuere. Sed lobortis dolor at ligula blandit egestas. Phasellus
-      fermentum nibh turpis, id malesuada ipsum consectetur nec. Quisque consequat auctor orci. Cras blandit, metus
-      quis malesuada vehicula, leo enim vulputate lectus, vitae volutpat ante felis sed mauris. Integer tellus
-      ipsum,
-      commodo non porta at, tincidunt non lectus. Sed tincidunt diam a pretium finibus. Vestibulum ante ipsum primis
-      in faucibus orci luctus et ultrices posuere cubilia curae; Aenean bibendum, lacus eu hendrerit rhoncus, metus
-      sapien porttitor nibh, eget semper mauris nulla id tortor.
-    </p>
-    <p>
-      Ut scelerisque diam ante, lacinia rutrum lacus gravida in. Duis dictum tortor vitae eros scelerisque maximus.
-      Phasellus sodales nisi nec nibh lacinia vehicula. Suspendisse in ornare risus. Aenean lobortis lectus vel
-      libero
-      aliquet fringilla. Pellentesque vitae rhoncus ipsum, non pharetra massa. Sed nec semper justo, et porta nulla.
-      Nullam libero tellus, iaculis pellentesque enim at, egestas sagittis metus.
-    </p>
-    <p>
-      
-      Sed non nibh nunc. Maecenas vitae enim nisl. Aliquam a odio in mauris egestas porta. Donec laoreet porta leo.
-      In
-      a ultrices enim. Nam placerat pellentesque augue, eget aliquet neque rhoncus ut. Suspendisse potenti.
-    </p>
-    <p>
-      Aenean volutpat commodo sapien, vel dapibus lacus lobortis ut. Nulla tristique luctus magna, in sollicitudin
-      augue tristique sed. Duis vehicula, risus in tincidunt dignissim, ante ex pellentesque quam, vitae rhoncus
-      ipsum
-      augue eu elit. Donec et egestas justo, in mollis purus. Aliquam quis mi id arcu placerat dictum. Integer
-      euismod
-      enim dui, fermentum accumsan lacus bibendum in. Donec gravida rutrum pellentesque. Suspendisse dictum aliquam
-      finibus. Sed nisl libero, tristique quis convallis sed, ullamcorper eget magna. Vivamus finibus, augue ac
-      ullamcorper pellentesque, sem ante efficitur urna, ut convallis massa dui vel ante. Sed vel lacus ipsum.
-    </p>
-    <p>
-      Aenean accumsan nisl ut eros scelerisque, et pellentesque felis dapibus. Proin porta dictum lectus nec
-      suscipit.
-      Cras mollis ullamcorper nulla. Phasellus posuere diam a lobortis iaculis. Cras aliquam quis justo sit amet
-      gravida. Nullam scelerisque sem at sodales lobortis. Donec sollicitudin posuere feugiat. In mollis ex at
-      ligula
-      commodo, eget ullamcorper dolor hendrerit.</p>
+      {{ event.description }}
     </p>
     
     <div class="div-3"></div>
@@ -119,10 +83,10 @@
     <hr>
     
     
-    <form action="">
+    <form action="" method="post" class="form">
+      {{ form.csrf_token }}
       <div class="form-group">
-        <textarea class="form-control" rows="5" style="resize: none;" id="comment"
-        placeholder="Say something..."></textarea>
+        {{ wtf.form_field(form.text, class='form-control', style='resize: none', rows='5', placeholder='Say something...') }}
         <button class="btn btn-primary btn-lg float-right mt-1" type="submit">Post</button>
       </div>
       <div class="div-3"></div>
@@ -131,22 +95,18 @@
     
     <hr>
 
-    
+    {% for comment in event.comments %}
     <div class="comment-container">
       <p>
         <img src="{{ url_for('static', filename='img/user_circle.png') }}" width="40" height="40">
-        BigKitty45
+        {{ comment.user.username }}
         <span class="text-muted">
-          01/01/2000
+          {{ comment.date_of_creation.strftime("%d/%m/%Y") }}
         </span>
       </p>
-      <p class="comment-text">
-        Donec ut cursus est. Phasellus dictum erat sagittis cursus pulvinar. Morbi rhoncus in metus id dictum. Sed
-        et
-        ultricies nibh. Mauris lobortis erat felis. Aenean.
-      </p>
+      <p class="comment-text">{{ comment.text }}</p>
     </div>
-    
+    {% endfor %}
   </div>
 </div>
 

@@ -8,3 +8,4 @@ def handle_exception(e):
     # pass through HTTP errors
     if isinstance(e, NotFound):
         return e
+

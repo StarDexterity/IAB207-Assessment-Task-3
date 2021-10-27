@@ -13,6 +13,13 @@ from . import db
 # create a blueprint
 bp = Blueprint('auth', __name__)
 
+def redirect_dest(fallback):
+    dest_url = request.args.get('next')
+    if not dest_url:
+        return redirect(fallback)
+    return redirect(dest_url)
+
+
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -34,14 +41,8 @@ def login():
             error = 'Incorrect password' 
         if error is None:
             login_user(u1)
-            next = request.args.get('next')
-
-            # redirects user to the page or resource they were trying to access
-            if next != None:
-                return redirect(next)
-
-
-            return redirect(url_for('main.index'))
+            # redirects user to the page or resource they were trying to access or index if that page does not exist
+            return redirect_dest(fallback=url_for('main.index'))
         else:
             print(error)
             flash(error)
@@ -90,6 +91,7 @@ def register():
 
 
 @bp.route('/logout')
+@login_required
 def logout():
     logout_user()
     flash("Logout successfully")
