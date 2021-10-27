@@ -49,7 +49,7 @@ def login():
     return render_template('user.html', form=login_form, heading='Login')
 
 
-@bp.route('/register', methods = ['GET', 'POST'])  
+@bp.route('/register', methods=['GET', 'POST'])  
 def register():  
     error = None
     #create the form

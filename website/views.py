@@ -32,13 +32,16 @@ def index():
 # serves images from uploads folder
 # use 'url_for("download", filename=name)' in html to use this function
 @bp.route('/uploads/<filename>')
-def download(filename):
-    # this try catch does not work  
-    try:
-        return send_from_directory(os.path.join(app.root_path, app.config["UPLOAD_FOLDER"]), filename)
-    except NotFound as nf:
-        print('file with filename %s was not found', filename)
-        return 'Resource not found'
+@bp.route('/uploads')
+def download(filename=None):
+    if filename is not None:
+        try:
+            return send_from_directory(os.path.join(app.root_path, app.config["UPLOAD_FOLDER"]), filename)
+        except NotFound as nf:
+            print('file with filename %s was not found', filename)
+            return send_from_directory(os.path.join(app.root_path, 'static\\img'), 'no_image.png')
+    else:
+        return send_from_directory(os.path.join(app.root_path, 'static\\img'), 'no_image.png')
     
 
 @bp.route('/create-event', methods=['GET', 'POST'])
@@ -46,6 +49,7 @@ def download(filename):
 def create_event():
     form = EventForm()
     if form.validate_on_submit():
+        # form was submitted and input was validated
         title = form.title.data
         des = form.description.data
         sport = form.sport.data
@@ -121,4 +125,4 @@ def view_details(event_id):
         db.session.add(new_comment)
         db.session.commit()
         return redirect(url_for('main.view_details', event_id=event_id))
-    return render_template('view_details.html', event=event, form=form)
+    return render_template('view_details.html', event=event, form=form, misc=misc)

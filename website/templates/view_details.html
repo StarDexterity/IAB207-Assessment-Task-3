@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Index{% endblock %}
+{% block title %}{{ event.title }}{% endblock %}
 {% import "bootstrap/wtf.html" as wtf %}
 
 
@@ -15,13 +15,13 @@
       <div class="col-lg-5">
         <div class="centered">
           <h4>{{ event.title }}</h4>
-          <p class="mylead text-muted">SUNCORP STADIUM - BRISBANE 2021</p>
+          <p class="mylead text-muted">By {{ event.user.username }}</p>
         </div>
         <div class="row">
           <div class="col">
             <p>Location:</p>
           </div>
-          <div class="col">
+          <div class="col-9">
             <p>{{ event.address }}</p>
           </div>
         </div>
@@ -29,81 +29,82 @@
           <div class="col">
             <p>Time:</p>
           </div>
-          <div class="col">
-            <p>Wednesday, June 9</p>
-            <p>{{ event.start_time.strftime("%I:%M %p") }} - {{ event.end_time.strftime("%I:%M %p") }}</p>
+          <div class="col-9">
+            <p>{{ misc.get_day(event.start_time.weekday()) }}, {{ event.start_time.day}}
+              {{misc.get_month(event.start_time.month - 1)}} {{ event.start_time.year }}
+              {{ event.start_time.strftime("%I:%M %p") }} - {{ event.end_time.strftime("%I:%M %p") }}
+            </p>
           </div>
         </div>
-        
+
         <br>
-        
+
         <div class="row">
           <div class="col">
             <p>Price:</p>
           </div>
-          <div class="col">
+          <div class="col-9">
             <p>${{ event.price }}</p>
           </div>
         </div>
-        
+
         <div class="row">
           <div class="col">
             <p>Status:</p>
           </div>
-          <div class="col">
+          <div class="col-9">
             <p>{{ event.status }}</p>
           </div>
         </div>
         {% if current_user.is_authenticated %}
         <button type="button" data-bs-toggle="modal" data-bs-target="#ticketmodal"
-        class="btn btn-success float-right">Book ticket</button>
+          class="btn btn-success float-right">Book ticket</button>
         {% else %}
-        <form action="{{ url_for('auth.login', next=url_for(request.endpoint,**request.view_args)) }}" method="post">
-          {{ form.csrf_token()}}
-          <button type="submit" class="btn btn-success float-right">Login to book ticket</button>
-        </form>
+          <a href="{{ url_for('auth.login', next=url_for(request.endpoint, **request.view_args)) }}" class="btn btn-secondary">Login to book ticket</a>
         {% endif %}
       </div>
     </div>
-    
-    
-    
-    
-    
+
+
+
+
+
     <div class="div-2"></div>
     <h3 class="mytitle centered">About</h3>
     <div class="div-2"></div>
-    
+
     <p>
       {{ event.description }}
     </p>
-    
+
     <div class="div-3"></div>
     <h2 class="mytitle">Comment</h2>
     <hr>
-    
-    
-    <form action="" method="post" class="form">
-      {{ form.csrf_token }}
-      <div class="form-group">
-        {{ wtf.form_field(form.text, class='form-control', style='resize: none', rows='5', placeholder='Say something...') }}
-        <button class="btn btn-primary btn-lg float-right mt-1" type="submit">Post</button>
-      </div>
-      <div class="div-3"></div>
-    </form>
+    <!--If user is authenticated display proper comment form, else display dummy one that redirects to login page-->
+    <div class="form-group">
+      <form action="" method="post">
+        {{ form.csrf_token()}}
+        {{ wtf.form_field(form.text, class='form-control', style='resize: none', rows='3',
+        placeholder='Add a comment...')}}
 
+
+        {% if current_user.is_authenticated %}
+        <button type="submit" class="btn btn-primary float-right mt-1" type="submit">Post</button>
+        {% else %}
+        <a href="{{ url_for('auth.login', next=url_for(request.endpoint, **request.view_args)) }}" class="btn btn-secondary float-right mt-1">Login to Comment</a>
+        {% endif %}
+      </form>
+    </div>
     
-    <hr>
+
+    <div class="div-3"></div>
+
 
     {% for comment in event.comments %}
     <div class="comment-container">
-      <p>
-        <img src="{{ url_for('static', filename='img/user_circle.png') }}" width="40" height="40">
-        {{ comment.user.username }}
-        <span class="text-muted">
-          {{ comment.date_of_creation.strftime("%d/%m/%Y") }}
-        </span>
-      </p>
+      <div class="comment-header">
+        <p><strong>{{ comment.user.username }}</strong> - {{ comment.date_of_creation.strftime("%d/%m/%Y at %H:%M:%S") }}</p>
+      </div>
       <p class="comment-text">{{ comment.text }}</p>
     </div>
     {% endfor %}
@@ -114,15 +115,15 @@
 
 <!-- Book ticket modal -->
 <div class="modal fade" id="ticketmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
-aria-hidden="true">
-<div class="modal-dialog modal-dialog-centered" role="document">
-  <div class="modal-content">
-    <div class="modal-header">
-      <div>
-        <h4>State of origin game 1</h4>
-        <p class="mylead text-muted">SUCORP STADIUM - BRISBANE 2021</p>
-      </div>
-      <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal">
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+          <h4>State of origin game 1</h4>
+          <p class="mylead text-muted">SUCORP STADIUM - BRISBANE 2021</p>
+        </div>
+        <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal">
       </div>
       <div class="modal-body">
         <h5>Adult ticket</h5>

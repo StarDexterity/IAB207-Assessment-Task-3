@@ -71,7 +71,7 @@ class EventForm(FlaskForm):
     # title of the event, thumbnail/details image, a description of the event, and the sport the event is
     title = StringField(validators=[InputRequired()])
     image = FileField(validators=[])
-    description = TextAreaField(validators=[])
+    description = TextAreaField(validators=[InputRequired(), Length(min=300)])
     sport = SelectField(choices=sports, validators=[InputRequired()])
 
     # date and time information
@@ -92,8 +92,9 @@ class EventForm(FlaskForm):
     tickets = IntegerField(validators=[InputRequired()])
     price = FloatField(validators=[InputRequired()])
 
+
 class CommentForm(FlaskForm):
-    text = TextAreaField(validators=[InputRequired()])
+    text = TextAreaField(label='', validators=[InputRequired()])
 
 
 # misc test form

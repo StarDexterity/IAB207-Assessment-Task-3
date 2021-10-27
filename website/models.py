@@ -82,7 +82,7 @@ class Comment(db.Model):
 
     @property
     def user(self) -> Event:
-        return Event.query.filter_by(event_id=self.event_id).first()
+        return User.query.filter_by(user_id=self.user_id).first()
 
     def __repr__(self):
         return "<Comment: {}>".format(self.text)

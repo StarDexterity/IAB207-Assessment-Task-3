@@ -48,7 +48,7 @@
 
                     <br>
                     <div class="form-group">
-                        {{ wtf.form_field(form.description, class='form-control')}}
+                        {{ wtf.form_field(form.description, class='form-control no-resize', rows='6')}}
                     </div>
                     <br>
                     <div class="form-froup">
@@ -173,9 +173,7 @@
             </div>
             <div class="div-3"></div>
             <div class="float-right">
-                <a href="{{ url_for('main.index') }}">
-                    <button class="btn btn-primary">Cancel</button>
-                </a>
+                <a href="{{ url_for('main.create_event') }}" class="btn btn-secondary">Cancel</a>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </div>
         </form>
