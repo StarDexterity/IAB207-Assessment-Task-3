@@ -116,7 +116,7 @@ def booked_events():
 
 @bp.route('/view-details/<event_id>', methods=['GET', 'POST'])
 def view_details(event_id):
-    event = Event.query.filter_by(event_id=event_id).first()
+    event:Event = Event.query.filter_by(event_id=event_id).first()
     form = CommentForm()
     if form.validate_on_submit():
         text = form.text.data
@@ -126,3 +126,8 @@ def view_details(event_id):
         db.session.commit()
         return redirect(url_for('main.view_details', event_id=event_id))
     return render_template('view_details.html', event=event, form=form, misc=misc)
+
+# function for testing any html file in templates
+@bp.route('/test-render/<file>')
+def test_render(file):
+    return render_template(file)
