@@ -66,6 +66,23 @@ class Event(db.Model):
     def __repr__(self): #string print method
         return "<Name: {}>".format(self.title)
 
+class OrderDetails(db.Model):
+    __tablename__ = 'order'
+    oder_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    ticket_quantity = db.Column(db.Integer())
+    oder_date = db.Column(db.DateTime())
+    total_cost = db.Column(db.Float())
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
+    event_id = db.Column(db.Integer, db.ForeignKey('events.event_id'))
+
+    @property
+    def user(self) -> User:
+        return User.query.filter_by(user_id=self.user_id).first()
+
+    @property
+    def user(self) -> Event:
+        return User.query.filter_by(user_id=self.user_id).first()
+
 
 class Comment(db.Model):
     __tablename__ = 'comments'
