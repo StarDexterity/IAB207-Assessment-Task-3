@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Manage Events{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="col-12 col-lg-10 mx-auto">
+    <div class="div-2"></div>
+    <div class="row">
+      <div class="col">
+        <h3>My Events</h3>
+      </div>
+      <div class="col">
+        <form action="{{ url_for('main.create_event') }}">
+          <button class="btn btn-primary float-right">Create Event</button>
+        </form>
+      </div>
+    </div>
+    <div class="div-1"></div>
+    <div class="row">
+      <div class="col-6">
+        <p>Event</p>
+      </div>
+      <div class="col-3">
+        <p>Sold</p>
+      </div>
+      <div class="col-3">
+        <p>Status</p>
+      </div>
+    </div>
+
+    {% for i in range(4) %}
+
+    <div class="my-event-container">
+      <div class="row">
+        <div class="col-6 d-flex">
+          <img class="img-fluid img-thumbnail float-left my-auto"
+            src="{{ url_for('main.download', filename='so1.jpg') }}">
+          <div class="my-auto">
+            <p>State of origin</p>
+            <p>Wednesday, 9th June 2021 at 7:00pm</p>
+            <p>40 Castlemaine St, Milton QLD 4064</p>
+          </div>
+        </div>
+        <div class="col-3 d-flex">
+          <p class="my-auto">0/389</p>
+        </div>
+        <div class="col-3 d-flex">
+          <p class="my-auto">Upcoming</p>
+          <div class="dropdown my-auto ms-auto">
+            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"></a>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" href="#">View</a>
+              <a class="dropdown-item" href="#">Edit</a>
+              <a class="dropdown-item" href="#">Delete</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="div-1"></div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
-{% block title %}Index{% endblock %}
+{% block title %}Create Event{% endblock %}
 
 {% block content %}
 <div class="hero-image"
@@ -174,7 +174,7 @@
             <div class="div-3"></div>
             <div class="float-right">
                 <a href="{{ url_for('main.create_event') }}" class="btn btn-secondary">Cancel</a>
-                <button type="submit" class="btn btn-primary">Submit</button>
+                {{ wtf.form_field(form.submit, class='btn btn-primary')}}
             </div>
         </form>
 

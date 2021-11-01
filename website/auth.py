@@ -65,16 +65,6 @@ def register():
         email=form.email_id.data
         contact_number = form.phone_no.data
 
-        u1:User = User.query.filter_by(user_name=uname).first()
-        e1:User = User.query.filter_by(email=email).first()
-        c1:User = User.query.filter_by(contact_number=contact_number).first()
-
-        if u1 is not None:
-            error = 'Username taken'
-        elif e1 is not None:
-            error = 'Email taken'
-        elif c1 is not None:
-            error = 'Phone number taken'
 
         if error is None:
             pwd_hash = generate_password_hash(pwd)
