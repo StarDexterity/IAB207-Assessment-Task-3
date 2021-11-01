@@ -2,6 +2,8 @@
 {% block title %}Manage Events{% endblock %}
 
 {% block content %}
+
+
 <div class="container-fluid">
   <div class="col-12 col-lg-10 mx-auto">
     <div class="div-2"></div>
@@ -16,6 +18,22 @@
       </div>
     </div>
     <div class="div-1"></div>
+
+    <div class="container-fluid">
+      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      {% for message in get_flashed_messages() %}
+      <div class="alert alert-warning alert-dismissible fade show">
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+          {{message}}
+      </div>
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
+    </div>
+
+    <div class="div-1"></div>
+    
     <div class="row">
       <div class="col-6">
         <p>Event</p>
@@ -27,25 +45,27 @@
         <p>Status</p>
       </div>
     </div>
-
-    {% for i in range(4) %}
-
+    
+    {% for event in events %}
+    
     <div class="my-event-container">
       <div class="row">
         <div class="col-6 d-flex">
           <img class="img-fluid img-thumbnail float-left my-auto"
-            src="{{ url_for('main.download', filename='so1.jpg') }}">
-          <div class="my-auto">
-            <p>State of origin</p>
-            <p>Wednesday, 9th June 2021 at 7:00pm</p>
-            <p>40 Castlemaine St, Milton QLD 4064</p>
+            src="{{ url_for('main.download', filename=event.image) }}">
+            <div class="my-auto">
+              <p>{{ event.title }}</p>
+              <p>{{ misc.get_day(event.start_time.weekday()) }}, {{ event.start_time.day}}
+                {{misc.get_month(event.start_time.month - 1)}} {{ event.start_time.year }} at
+              {{ event.start_time.strftime("%I:%M %p") }}</p>
+              <p>{{ event.address }}</p>
           </div>
         </div>
         <div class="col-3 d-flex">
-          <p class="my-auto">0/389</p>
+          <p class="my-auto">0/{{ event.tickets }}</p>
         </div>
         <div class="col-3 d-flex">
-          <p class="my-auto">Upcoming</p>
+          <p class="my-auto">{{ event.status }}</p>
           <div class="dropdown my-auto ms-auto">
             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"></a>
             </button>

@@ -48,6 +48,7 @@
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                   <li><a class="dropdown-item" href="{{ url_for('main.create_event') }}">Create an event</a></li>
                   <li><a class="dropdown-item" href="{{ url_for('main.booked_events') }}">View booked events</a></li>
+                  <li><a class="dropdown-item" href="{{ url_for('main.manage_events') }}">Manage my events</a></li>
                   <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
                 </ul>
                 {% else %}

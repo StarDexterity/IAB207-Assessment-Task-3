@@ -96,18 +96,17 @@ def create_event():
 
         # commit database changes    
         db.session.commit()
+
+        # let the user know the action was successful and take them to the manage events page so they can verify their event was created
         flash("Registered event successfully")
-        return redirect(url_for('main.create_event'))
+        return redirect(url_for('main.manage_events'))
     return render_template('create_event.html', form=form)
 
-# convenience method for testing things
-@bp.route('/test', methods=['GET', 'POST'])
-def test():
-    form = TestForm()
-    if form.is_submitted():
-        print(form.message.data)
-    return render_template('test.html')
     
+@bp.route('/manage-events')
+@login_required
+def manage_events():
+    return render_template('manage_events.html', events=current_user.events, misc=misc)
 
 @bp.route('/booked-events')
 def booked_events():

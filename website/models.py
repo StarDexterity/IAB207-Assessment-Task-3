@@ -81,7 +81,7 @@ class Comment(db.Model):
         return User.query.filter_by(user_id=self.user_id).first()
 
     @property
-    def user(self) -> Event:
+    def event(self) -> Event:
         return User.query.filter_by(user_id=self.user_id).first()
 
     def __repr__(self):
