@@ -15,7 +15,7 @@
     <a href="{{ url_for('.create_event') }}">
       <button type="button" class="btn btn-primary btn-lg">Create event</button>
     </a>
-    <a href="#popular">
+    <a href="#search">
       <button type="button" class="btn btn-primary btn-lg">Find an event</button>
     </a>
   </div>
@@ -27,10 +27,18 @@
 <div class="container">
   <div class="row justify-content-center mt-5 pb-4">
     <div class="col-md-12">
-      <div class="card shadow p-5 mb-5 bg-light">
-        <h1 class="text-center mb-3">Search for upcoming sporting events</h1>
+      <div class="card shadow p-5 mb-5 bg-light" id="search">
+        <h1 class="text-center mb-3">Search for the sporting event or creator...</h1>
         <br>
-        <form class="d-flex ms-auto me-4">
+        <form class="d-flex">
+          <select class="me-2 pe-5 py-2" name="dropdown">
+            <option value="all" selected>All</option>
+            <option value="soccer">Soccer</option>
+            <option value="football">Football</option>
+            <option value="netball">Netball</option>
+            <option value="basketball">Basketball</option>
+            <option value="hockey">Hockey</option>
+          </select>
           <input class="form-control me-2 pe-5 py-2" type="search" placeholder="Search" aria-label="Search">
           <button class="btn btn-outline-success" type="submit">Search</button>
         </form>
