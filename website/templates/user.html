@@ -5,12 +5,9 @@
 
 <div class="container-fluid">
     <div class="col-10 col-lg-8 mx-auto">
-        <div class="page-header">
-            <h4>{{heading}}</h4>
-        </div>
-
-
-
+        
+        <div class="div-1"></div>
+        
         <div class="container-fluid">
             {% with messages = get_flashed_messages() %}
             {% if messages %}
@@ -23,7 +20,11 @@
             {% endif %}
             {% endwith %}
         </div>
-
+        
+        
+        <div class="page-header">
+            <h4>{{heading}}</h4>
+        </div>
 
 
         <!-- Form rendering is simple and easy if using bootstrap -->

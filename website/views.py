@@ -26,7 +26,6 @@ def allowed_file(filename):
 @bp.route('/')
 def index():
     events = Event.query.all()
-    ev:Event = events[0]
     return render_template('index.html', misc=misc, events=events)
 
 # serves images from uploads folder
@@ -76,14 +75,14 @@ def create_event():
         addr = ','.join([street, city, postcode, state])
 
         status = form.status.data
-        tickets = form.tickets.data
+        ticket_quantity = form.ticket_quantity.data
         price = form.price.data
 
         user_id = current_user.user_id
 
         new_event = Event(title=title, description=des, sport=sport, venue=venue, address=addr, 
             start_time=start_datetime, end_time=end_datetime, status=status, 
-            tickets=tickets, price=price, user_id=user_id)
+            ticket_quantity=ticket_quantity, price=price, user_id=user_id)
         db.session.add(new_event)
 
         # checks for image file and authenticates it
@@ -120,12 +119,22 @@ def view_details(event_id):
     if form.validate_on_submit():
         text = form.text.data
         user_id = current_user.user_id
-        new_comment = Comment(text=text, user_id=user_id, event_id=event_id)
+        new_comment = Comment(text=text, user_id=user_id, event_id=event_id, date_of_creation=datetime.now())
         db.session.add(new_comment)
         db.session.commit()
         return redirect(url_for('main.view_details', event_id=event_id))
     return render_template('view_details.html', event=event, form=form, misc=misc)
 
+
+@bp.route('/delete_event/<event_id>')
+def delete_event(event_id):
+    event:Event = Event.query.filter_by(event_id=event_id).first()
+    if event.is_owner:
+        db.session.delete(event)
+        db.session.commit()
+        return redirect(url_for('main.manage_events'))
+    
+    
 # function for testing any html file in templates
 @bp.route('/test-render/<file>')
 def test_render(file):
