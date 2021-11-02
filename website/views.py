@@ -53,16 +53,17 @@ def create_event():
         des = form.description.data
         sport = form.sport.data
 
-        start_date = form.start_date.data
-        start_time = form.start_time.data
 
         # merge date and time into a datetime object
+        start_date = form.start_date.data
+        start_time = form.start_time.data
         start_datetime = datetime(start_date.year, start_date.month, start_date.day, start_time.hour, start_time.minute, start_time.second)
-        end_date = form.end_date.data
-        end_time = form.end_time.data
         
         # merge date and time into a datetime object
+        end_date = form.end_date.data
+        end_time = form.end_time.data
         end_datetime = datetime(end_date.year, end_date.month, end_date.day, end_time.hour, end_time.minute, end_time.second)
+
         venue = form.venue.data
 
         # get address information from each input
@@ -129,13 +130,39 @@ def view_details(event_id):
 @bp.route('/delete_event/<event_id>')
 def delete_event(event_id):
     event:Event = Event.query.filter_by(event_id=event_id).first()
-    if event.is_owner:
+    if event is not None and event.is_owner:
         db.session.delete(event)
         db.session.commit()
         return redirect(url_for('main.manage_events'))
     
-    
+@bp.route('/edit_event/<event_id>', methods=['GET', 'POST'])
+def edit_event(event_id):
+    event:Event = Event.query.filter_by(event_id=event_id).first()
+    if event is not None and event.is_owner:
+        form = EventForm(obj=event)
+        if form.validate_on_submit():
+            # populate event object with form data
+            form.populate_event(event)
+            db.session.commit()
+            return redirect(url_for('main.manage_events'))
+        
+        form.start_time.data = event.start_time.time()
+        form.start_date.data = event.start_time.date()
+        form.end_time.data = event.end_time.time()
+        form.end_date.data = event.end_time.date()
+
+        street, city, postcode, state = event.address.split(',')
+        form.street.data = street
+        form.city.data = city
+        form.postcode.data = postcode
+        form.state.data = state
+        return render_template('create_event.html', form=form)
+
+
+
+
 # function for testing any html file in templates
 @bp.route('/test-render/<file>')
 def test_render(file):
     return render_template(file)
+

@@ -8,7 +8,8 @@ from wtforms.fields import (
 from wtforms.validators import InputRequired, Length, Email, EqualTo, ValidationError
 from wtforms.widgets.core import Input
 import re
-from .models import User
+from .models import User, Event
+from datetime import datetime
 
 
 # list of sports used by the application
@@ -116,6 +117,38 @@ class EventForm(FlaskForm):
 
     submit = SubmitField('Submit')
 
+    def populate_event(self, event:Event):
+        event.title = self.title.data
+        event.image = self.image.data
+        event.description = self.description.data
+        event.sport = self.sport.data
+
+
+        event.venue = self.venue.data
+        # merge date and time into a datetime object
+        start_date = self.start_date.data
+        start_time = self.start_time.data
+        event.start_time = datetime(start_date.year, start_date.month, start_date.day, start_time.hour, start_time.minute, start_time.second)
+        
+        # merge date and time into a datetime object
+        end_date = self.end_date.data
+        end_time = self.end_time.data
+        event.end_time = datetime(end_date.year, end_date.month, end_date.day, end_time.hour, end_time.minute, end_time.second)
+
+        # get address information from each input
+        street = self.street.data
+        city = self.city.data
+        state = self.state.data
+        postcode = self.postcode.data
+
+        # join address information into a single entry
+        event.addr = ','.join([street, city, postcode, state])
+
+        event.status = self.status.data
+        event.price = self.price.data
+        event.ticket_quantity = self.ticket_quantity.data
+
+    
 
 class CommentForm(FlaskForm):
     text = TextAreaField(label='', validators=[InputRequired(), Length(max=400)])
