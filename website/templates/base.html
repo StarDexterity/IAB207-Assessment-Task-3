@@ -35,12 +35,9 @@
           <div class="collapse navbar-collapse" id="navbarScroll">
             <div class="div-1"></div>
   
-              <form class="d-flex ms-auto me-4">
-                <input class="form-control me-2 pe-5 py-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success" type="submit">Search</button>
-              </form>
+  
               {% if current_user.is_authenticated %}
-              <ul class="navbar-nav my-2 my-lg-0" >
+              <ul class="navbar-nav my-2 my-lg-0 d-flex ms-auto me-4" >
                 <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                   Welcome, {{ current_user.user_name }}
@@ -52,7 +49,7 @@
                   <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout</a></li>
                 </ul>
                 {% else %}
-                <ul class="navbar-nav my-2 my-lg-0">
+                <ul class="navbar-nav my-2 my-lg-0 d-flex ms-auto me-4">
                   <li class="nav-item">
                     <a class="nav-link active me-4" aria-current="page" href="{{ url_for('auth.login') }}">Log in</a>
                   </li>

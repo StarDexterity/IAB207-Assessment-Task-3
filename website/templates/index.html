@@ -22,6 +22,24 @@
 </div>
 
 
+
+
+<div class="container">
+  <div class="row justify-content-center mt-5 pb-4">
+    <div class="col-md-12">
+      <div class="card shadow p-5 mb-5 bg-light">
+        <h1 class="text-center mb-3">Search for upcoming sporting events</h1>
+        <br>
+        <form class="d-flex ms-auto me-4">
+          <input class="form-control me-2 pe-5 py-2" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="container-fluid">
   <div class="col-10 col-lg-8 mx-auto">
     <div class="div-3"></div>
@@ -46,9 +64,10 @@
                 <p class="text-muted">{{ misc.get_day(event.start_time.weekday()) }}, {{ event.start_time.day}}
                   {{misc.get_month(event.start_time.month - 1)}} - {{ event.venue }} - {{event.status}}</p>
                 -->
-                <p>{{event.description[:100] }}<span class="text-muted">...</span></p><!--Limited in length. Only a preview of the description-->
-              </div>
+              <p>{{event.description[:100] }}<span class="text-muted">...</span></p>
+              <!--Limited in length. Only a preview of the description-->
             </div>
+          </div>
         </div>
         {% endfor %}
       </div>
