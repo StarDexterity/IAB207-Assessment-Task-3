@@ -26,14 +26,14 @@ def login():
     login_form = LoginForm()
     error = None
     if login_form.validate_on_submit():
-        username = login_form.user_name.data
+        username = login_form.username.data
         password = login_form.password.data
 
         if login_form.keep_loggedin.data:
             session.permanent = True
 
         # returns first match to username
-        u1:User = User.query.filter_by(user_name=username).first()
+        u1:User = User.query.filter_by(username=username).first()
         # if none error
         if u1 is None:
             error = 'Incorrect username'
@@ -60,7 +60,7 @@ def register():
        
 
         #get username, password and email from the form
-        uname =form.user_name.data
+        uname =form.username.data
         pwd = form.password.data
         email=form.email_id.data
         contact_number = form.phone_no.data
@@ -69,7 +69,7 @@ def register():
         if error is None:
             pwd_hash = generate_password_hash(pwd)
             #create a new user model object
-            new_user = User(user_name=uname, password_hash=pwd_hash, email=email, contact_number=contact_number)
+            new_user = User(username=uname, password_hash=pwd_hash, email=email, contact_number=contact_number)
             db.session.add(new_user)
             db.session.commit()
             flash("Registered user successfully")

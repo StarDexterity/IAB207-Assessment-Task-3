@@ -32,7 +32,7 @@ statuses = [
 
 #creates the login information
 class LoginForm(FlaskForm):
-    user_name=StringField("User Name", validators=[InputRequired('Enter user name')])
+    username=StringField("User Name", validators=[InputRequired('Enter user name')])
     password=PasswordField("Password", validators=[InputRequired('Enter user password')])
     # indicates user should be kept logged in between sessions
     keep_loggedin = BooleanField("Stay logged in")
@@ -47,7 +47,7 @@ class LoginForm(FlaskForm):
  # this is the registration form
 class RegisterForm(FlaskForm):
     # user name
-    user_name=StringField("User Name", validators=[InputRequired("Please enter a username"), Length(max=20, message='Username must be no longer than 20 characters.')])
+    username=StringField("User Name", validators=[InputRequired("Please enter a username"), Length(max=20, message='Username must be no longer than 20 characters.')])
     email_id = StringField("Email Address", validators=[Email("Please enter a valid email")])
 
     phone_no = StringField('Phone number', validators=[InputRequired("Please enter a phone number")])
@@ -67,8 +67,8 @@ class RegisterForm(FlaskForm):
         elif User.query.filter_by(contact_number=field.data).first():
             raise ValidationError('Phone number taken')
 
-    def validate_user_name(form, field):
-        if User.query.filter_by(user_name=field.data).first() is not None:
+    def validate_username(form, field):
+        if User.query.filter_by(username=field.data).first() is not None:
             return ValidationError('Username taken')
 
     def validate_email_id(form, field):
@@ -111,14 +111,14 @@ class EventForm(FlaskForm):
     postcode = StringField(validators=[InputRequired()])
 
     status = SelectField(choices=statuses, validators=[InputRequired()])
-    tickets = IntegerField(validators=[InputRequired()])
+    ticket_quantity = IntegerField(validators=[InputRequired()])
     price = FloatField(validators=[InputRequired()])
 
     submit = SubmitField('Submit')
 
 
 class CommentForm(FlaskForm):
-    text = TextAreaField(label='', validators=[InputRequired()])
+    text = TextAreaField(label='', validators=[InputRequired(), Length(max=400)])
 
 
 # misc test form

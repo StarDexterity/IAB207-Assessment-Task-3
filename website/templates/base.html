@@ -40,7 +40,7 @@
               <ul class="navbar-nav my-2 my-lg-0 d-flex ms-auto me-4" >
                 <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Welcome, {{ current_user.user_name }}
+                  Welcome, {{ current_user.username }}
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                   <li><a class="dropdown-item" href="{{ url_for('main.create_event') }}">Create an event</a></li>

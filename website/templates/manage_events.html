@@ -62,7 +62,7 @@
           </div>
         </div>
         <div class="col-3 d-flex">
-          <p class="my-auto">0/{{ event.tickets }}</p>
+          <p class="my-auto">{{ event.tickets_sold }}/{{ event.ticket_quantity }}</p>
         </div>
         <div class="col-3 d-flex">
           <p class="my-auto">{{ event.status }}</p>
@@ -70,9 +70,9 @@
             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"></a>
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <a class="dropdown-item" href="#">View</a>
+              <a class="dropdown-item" href="{{ url_for('main.view_details', event_id=event.event_id) }}">View</a>
               <a class="dropdown-item" href="#">Edit</a>
-              <a class="dropdown-item" href="#">Delete</a>
+              <a class="dropdown-item" href="{{ url_for('main.delete_event', event_id=event.event_id) }}">Delete</a>
             </div>
           </div>
         </div>
