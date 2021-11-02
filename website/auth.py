@@ -84,6 +84,6 @@ def register():
 @login_required
 def logout():
     logout_user()
-    flash("Logout successfully")
+    #flash("Logout successfully") 
     return redirect(url_for("main.index"))
 
