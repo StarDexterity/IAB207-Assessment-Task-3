@@ -54,7 +54,12 @@
                 {% else %}
                 <ul class="navbar-nav my-2 my-lg-0">
                   <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{{ url_for('auth.login') }}">Log in</a>
+                    <a class="nav-link active me-4" aria-current="page" href="{{ url_for('auth.login') }}">Log in</a>
+                  </li>
+                  <li>
+                    <form class="form me-2" action="{{ url_for('auth.register') }}">
+                      <button type="submit" class="btn btn-success">Register</button>
+                    </form>
                   </li>
                 </ul>
                 {% endif %}
