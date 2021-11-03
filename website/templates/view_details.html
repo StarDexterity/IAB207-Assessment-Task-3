@@ -142,7 +142,7 @@
           <div class="form-group row">
             <label for="qty" class="col-2 col-form-label">Quantity:</label>
             <div class="col-5">
-              {{ wtf.form_field(oform.ticket_quantity, type=number, class='form-control', min=1, required='true', max=event.tickets_remaining)}}
+              {{ wtf.form_field(oform.ticket_quantity, type=number, class='form-control') }}
             </div>
           </div>
           <button type="submit" class="btn btn-success float-right">Checkout</button>

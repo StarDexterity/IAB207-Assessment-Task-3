@@ -8,7 +8,7 @@ from wtforms.fields import (
 from wtforms.validators import InputRequired, Length, Email, EqualTo, ValidationError, NumberRange
 from wtforms.widgets.core import Input
 import re
-from .models import User, Event
+from .models import BOOKED, CANCELLED, User, Event
 from datetime import datetime
 
 
@@ -149,7 +149,18 @@ class CommentForm(FlaskForm):
     text = TextAreaField(label='', validators=[InputRequired(), Length(max=400)])
 
 class OrderForm(FlaskForm):
-    ticket_quantity = IntegerField(label='')
+    event_id = 0
+    ticket_quantity = IntegerField(label='', validators=[InputRequired()])
+
+    def validate_ticket_quantity(form, field):
+        event:Event = Event.query.filter_by(event_id=form.event_id).first()
+        if event.status == BOOKED:
+            raise ValidationError(message='Event is fully booked')
+        elif event.status == CANCELLED:
+            raise ValidationError('Event has been cancelled')
+        elif field.data > event.tickets_remaining:
+            raise ValidationError(message='Ticket quantity must be at most {}'.format(event.tickets_remaining))
+        
 
 
 # misc test form
