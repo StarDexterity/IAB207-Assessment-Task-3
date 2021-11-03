@@ -144,6 +144,7 @@ def view_details(event_id):
     event:Event = Event.query.filter_by(event_id=event_id).first()
     cform = CommentForm()
     oform = OrderForm()
+    oform.event_id = event_id
     if cform.validate_on_submit():
         text = cform.text.data
         user_id = current_user.user_id
