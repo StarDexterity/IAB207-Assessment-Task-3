@@ -28,10 +28,8 @@ def allowed_file(filename):
 @bp.route('/', methods=['GET', 'POST'])
 def index():
     form = SearchForm()
-    category = SearchForm.category.data
+    category = form.category.data
     
-    selected_type:type = Event.query.filter_by(category=category).all()
-
     if form.category == 'All':
         events = Event.query.all()
     else:

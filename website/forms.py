@@ -12,9 +12,7 @@ from .models import User, Event
 from datetime import datetime
 
 
-<<<<<<< HEAD
 from .models import statuses, sports
-=======
 search_sports = [
     'All',
     'Soccer',
@@ -41,9 +39,6 @@ statuses = [
     'Booked',
     'Cancelled'
 ]
-
->>>>>>> 2359b7415be2d812e27e2937f98a5cfa52a6f437
-
 
 
 #creates the login information
