@@ -11,10 +11,9 @@ from werkzeug.utils import secure_filename
 from werkzeug.exceptions import NotFound
 
 from website import ALLOWED_EXTENSIONS, db
-from .forms import EventForm, TestForm, CommentForm
-from .models import Event, Comment
+from .forms import EventForm, CommentForm, OrderForm
+from .models import Event, Comment, Order
 
-from . import misc
 
 bp = Blueprint('main', __name__)
 
@@ -26,7 +25,7 @@ def allowed_file(filename):
 @bp.route('/')
 def index():
     events = Event.query.all()
-    return render_template('index.html', misc=misc, events=events)
+    return render_template('index.html', events=events)
 
 # serves images from uploads folder
 # use 'url_for("download", filename=name)' in html to use this function
@@ -106,7 +105,7 @@ def create_event():
 @bp.route('/manage-events')
 @login_required
 def manage_events():
-    return render_template('manage_events.html', events=current_user.events, misc=misc)
+    return render_template('manage_events.html', events=current_user.events)
 
 @bp.route('/booked-events')
 def booked_events():
@@ -116,15 +115,27 @@ def booked_events():
 @bp.route('/view-details/<event_id>', methods=['GET', 'POST'])
 def view_details(event_id):
     event:Event = Event.query.filter_by(event_id=event_id).first()
-    form = CommentForm()
-    if form.validate_on_submit():
-        text = form.text.data
+    cform = CommentForm()
+    oform = OrderForm()
+    oform.max = event.tickets_remaining
+    if cform.validate_on_submit():
+        text = cform.text.data
         user_id = current_user.user_id
         new_comment = Comment(text=text, user_id=user_id, event_id=event_id, date_of_creation=datetime.now())
         db.session.add(new_comment)
         db.session.commit()
         return redirect(url_for('main.view_details', event_id=event_id))
-    return render_template('view_details.html', event=event, form=form, misc=misc)
+
+    if oform.is_submitted():
+        if oform.validate():
+            user_id = current_user.user_id
+            new_order = Order()
+            db.session.add(new_order)
+            db.session.commit()
+            return redirect(url_for('main.booked_events'))
+        else:
+            flash('Order attempt was unsuccessful')
+    return render_template('view_details.html', event=event, oform=oform, cform=cform)
 
 
 @bp.route('/delete_event/<event_id>')
@@ -134,6 +145,7 @@ def delete_event(event_id):
         db.session.delete(event)
         db.session.commit()
         return redirect(url_for('main.manage_events'))
+    
     
 @bp.route('/edit_event/<event_id>', methods=['GET', 'POST'])
 def edit_event(event_id):

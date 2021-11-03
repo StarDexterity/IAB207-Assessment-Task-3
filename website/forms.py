@@ -5,7 +5,7 @@ from wtforms.fields import (
     BooleanField, IntegerField, TimeField, DateField, 
     FloatField, SelectField
 )
-from wtforms.validators import InputRequired, Length, Email, EqualTo, ValidationError
+from wtforms.validators import InputRequired, Length, Email, EqualTo, ValidationError, NumberRange
 from wtforms.widgets.core import Input
 import re
 from .models import User, Event
@@ -29,6 +29,8 @@ statuses = [
     'Booked',
     'Cancelled'
 ]
+
+
 
 
 #creates the login information
@@ -146,14 +148,19 @@ class EventForm(FlaskForm):
 
         event.status = self.status.data
         event.price = self.price.data
-        event.ticket_quantity = self.ticket_quantity.data
+        event.tickets_total = self.ticket_quantity.data
 
     
 
 class CommentForm(FlaskForm):
     text = TextAreaField(label='', validators=[InputRequired(), Length(max=400)])
 
+class OrderForm(FlaskForm):
+    ticket_quantity = IntegerField(label='')
+    max = 100
 
-# misc test form
-class TestForm(FlaskForm):
-    message = StringField()
+    def validate_ticket_quantity(form, field):
+        if field.data > form.max:
+            raise ValidationError(message='The quantity of tickets must be at most {}'.format(form.max))
+
+    

@@ -19,18 +19,7 @@
     </div>
     <div class="div-1"></div>
 
-    <div class="container-fluid">
-      {% with messages = get_flashed_messages() %}
-      {% if messages %}
-      {% for message in get_flashed_messages() %}
-      <div class="alert alert-warning alert-dismissible fade show">
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
-          {{message}}
-      </div>
-      {% endfor %}
-      {% endif %}
-      {% endwith %}
-    </div>
+    {% include "messages.html" %}
 
     <div class="div-1"></div>
     
@@ -56,14 +45,12 @@
             src="{{ url_for('main.download', filename=event.image) }}">
             <div class="my-auto">
               <p>{{ event.title }}</p>
-              <p>{{ misc.get_day(event.start_time.weekday()) }}, {{ event.start_time.day}}
-                {{misc.get_month(event.start_time.month - 1)}} {{ event.start_time.year }} at
-              {{ event.start_time.strftime("%I:%M %p") }}</p>
+              <p>{{ event.formatted_time(event.start_time) }}</p>
               <p>{{ event.address }}</p>
           </div>
         </div>
         <div class="col-3 d-flex">
-          <p class="my-auto">{{ event.tickets_sold }}/{{ event.ticket_quantity }}</p>
+          <p class="my-auto">{{ event.tickets_sold|string }}/{{ event.tickets_total|string }}</p>
         </div>
         <div class="col-3 d-flex">
           <p class="my-auto">{{ event.status }}</p>
@@ -88,4 +75,5 @@
     {% endif %}
   </div>
 </div>
+<div class="div-2"></div>
 {% endblock %}

@@ -3,11 +3,13 @@
 {% import "bootstrap/wtf.html" as wtf %}
 
 
-
 {% block content %}
 <div class="div-3"></div>
 <div class="container-fluid">
   <div class="col col-md-8 mx-auto">
+
+    {% include "messages.html" %}
+
     <div class="row">
       <div class="col-lg-7">
         <img class="image-centered" src="{{ url_for('.download', filename=event.image) }}">
@@ -30,13 +32,7 @@
             <p>Time:</p>
           </div>
           <div class="col-9">
-            <p>{{ misc.get_day(event.start_time.weekday()) }}, {{ event.start_time.day}}
-              {{misc.get_month(event.start_time.month - 1)}} {{ event.start_time.year }}
-              {{ event.start_time.strftime("%I:%M %p") }} -
-              {{ misc.get_day(event.end_time.weekday()) }}, {{ event.end_time.day}}
-              {{misc.get_month(event.end_time.month - 1)}} {{ event.end_time.year }}
-              {{event.end_time.strftime("%I:%M %p") }}
-            </p>
+            <p>{{ event.formatted_time(event.start_time) }} - {{ event.formatted_time(event.start_time) }}</p>
           </div>
         </div>
 
@@ -89,8 +85,8 @@
     <!--If user is authenticated display proper comment form, else display dummy one that redirects to login page-->
     <div class="form-group">
       <form action="" method="post">
-        {{ form.csrf_token()}}
-        {{ wtf.form_field(form.text, class='form-control', style='resize: none', rows='3',
+        {{ cform.csrf_token()}}
+        {{ wtf.form_field(cform.text, class='form-control', style='resize: none', rows='3',
         placeholder='Add a comment...')}}
 
 
@@ -128,23 +124,24 @@
     <div class="modal-content">
       <div class="modal-header">
         <div>
-          <h4>State of origin game 1</h4>
-          <p class="mylead text-muted">SUCORP STADIUM - BRISBANE 2021</p>
+          <h4>{{ event.title }}</h4>
+          <p class="mylead text-muted">By {{ event.user.username }}</p>
         </div>
         <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal">
       </div>
       <div class="modal-body">
-        <h5>Adult ticket</h5>
         <div class="d-flex">
-          <p class="mylead text-muted">A$89.95 incl. A$5.00 Tax</p>
+          <p class="mylead text-muted">Price: A${{ event.price }}</p>
           <div class="div-1"></div>
-          <p class="mylead text-muted">Remain tickets: 15</p>
+          <p class="mylead text-muted">Remaining tickets: {{ event.tickets_remaining|string }}</p>
         </div>
-        <form>
+        <form method="post">
+          {{ oform.csrf_token()}}
           <div class="form-group row">
             <label for="qty" class="col-2 col-form-label">Quantity:</label>
             <div class="col-5">
-              <input type="number" class="form-control" min="0" max="15">
+
+              <input type="number" class="form-control" required max="6">
             </div>
           </div>
           <button type="submit" class="btn btn-success float-right">Checkout</button>

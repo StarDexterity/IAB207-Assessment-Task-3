@@ -28,7 +28,7 @@
   <div class="row justify-content-center mt-5 pb-4">
     <div class="col-md-12">
       <div class="card shadow p-5 mb-5 bg-light" id="search">
-        <h1 class="text-center mb-3">Search for the sporting event or creator...</h1>
+        <h1 class="text-center mb-3">Search by title or user...</h1>
         <br>
         <form class="d-flex">
           <select class="me-2 pe-5 py-2" id="category" name="category">
@@ -68,10 +68,6 @@
                 <h4>{{ event.title }}</h4>
               </a>
               <p class="mylead text-muted">By {{ event.user.username }}</p>
-              <!--
-                <p class="text-muted">{{ misc.get_day(event.start_time.weekday()) }}, {{ event.start_time.day}}
-                  {{misc.get_month(event.start_time.month - 1)}} - {{ event.venue }} - {{event.status}}</p>
-                -->
               <p>{{event.description[:100] }}<span class="text-muted">...</span></p>
               <!--Limited in length. Only a preview of the description-->
             </div>

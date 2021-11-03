@@ -1,6 +1,21 @@
 from . import db
 from flask_login import UserMixin, current_user
+from datetime import datetime
     
+
+days_of_week = ('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday')
+months = ('January', 'Febuary', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December')
+
+'''Gets the day of the week'''
+def get_day(day:int):
+    return days_of_week[day]
+
+'''Gets month name from month number from 0 - 11'''
+def get_month(month:int):
+    return months[month]
+
+
+
 class User(db.Model, UserMixin):
     __tablename__='users' # good practice to specify table name
     user_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -39,7 +54,7 @@ class Event(db.Model):
     end_time = db.Column(db.DateTime())
 
     status = db.Column(db.String(15))
-    ticket_quantity = db.Column(db.Integer())
+    tickets_total = db.Column(db.Integer())
     price = db.Column(db.Float())
 
     user_id = db.Column(db.Integer(), db.ForeignKey('users.user_id'))
@@ -62,13 +77,23 @@ class Event(db.Model):
         return User.query.filter_by(user_id=self.user_id).first()
 
     @property
-    def tickets_sold(self) -> str:
+    def tickets_sold(self) -> int:
         tickets_sold = 0
         for order in self.orders:
             tickets_sold += order.ticket_quantity
-        return str(tickets_sold)
+        return tickets_sold
 
-    
+    @property
+    def tickets_remaining(self) -> int:
+        return self.tickets_total - self.tickets_sold
+
+    def formatted_time(self, time:datetime):
+        return '{}, {} {} {} at {}'.format(get_day(time.weekday()), 
+                                                time.day, 
+                                                get_month(time.month - 1), 
+                                                time.year, 
+                                                time.strftime("%I:%M %p"))
+                                                
 	
     def __repr__(self): #string print method
         return "<Name: {}>".format(self.title)
