@@ -33,43 +33,63 @@ def index():
     search = form.search.data
     error = None
     anything_found = ''
+    passed = 0
 
+    events = Event.query.all()
 
     c1:Event = Event.query.filter_by(sport=category).first()
     s1:Event = Event.query.filter_by(title=search).first()
     s2:User = User.query.filter_by(username=search).first()
 
     events = Event.query.all()
-    
-    if (category == 'All') and ((s1 is not None) or (s2 is not None)):
+
+    #if search empty but category chosen find those events
+    if ((category == 'All') or (c1 is not None)) and (search == ''):
+        if category == 'All':
+            events = Event.query.all()
+            passed = 1
+        elif (c1 is not None):
+            events = Event.query.filter_by(sport=category).all()
+            passed = 1
+
+    #if search filled and found and category = all
+    elif (category == 'All') and ((s1 is not None) or (s2 is not None)):
         if (s1 is not None):
             events = Event.query.filter_by(title=search).all()
+            passed = 1
         elif (s2 is not None):
             searched_user = s2.user_id
             events = Event.query.filter_by(user_id=searched_user).all()
+            passed = 1
 
-    elif (category is None) and ((s1 is None) and (s2 is None)):
-        category = 'All'
-        events = Event.query.all()
-
-    elif ((c1 is None) or (c1 is not None)) and (s1 is None) and (s2 is None):
-        anything_found = 'Nothing was found matching those search terms'
-        category = 'All'
-        events = Event.query.all()
-
+    #if search filled and found with correct category
     elif (c1 is not None) and ((s1 is not None) or (s2 is not None)):
         if (s1 is not None):
             events = Event.query.filter_by(title=search, sport=category).all()
+            passed = 1
         elif (s2 is not None):
             searched_user = s2.user_id
             events = Event.query.filter_by(user_id=searched_user, sport=category).all()
+            passed = 1
 
-    elif ((category == 'All') or (c1 is not None)) and (search is None):
-        if category == 'All':
+    #if nothing can be found
+    elif ((c1 is None) or (c1 is not None)) and (s1 is None) and (s2 is None):
+        if search is not None:
+            anything_found = 'Nothing was found matching those search terms'
+            category = 'All'
             events = Event.query.all()
-        else:
-            events = Event.query.filter_by(sport=category).all()
+            passed = 1
 
+    #if nothing above has been passed successfully then it definetly could not be found and can be assumed that the values haven't been
+    # assigned yet or nothing at all could be found
+    if passed == 0:
+        if category is None:
+            category = 'All'
+        else:
+            anything_found = 'Nothing was found matching those search terms'
+            category = 'All'
+            events = Event.query.all()
+            passed = 1
 
     return render_template('index.html', events=events, form=form, selected_category=category, anything_found=anything_found)
 
