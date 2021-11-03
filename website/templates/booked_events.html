@@ -1,46 +1,73 @@
 {% extends "base.html" %}
-{% block title %}Index{% endblock %}
+{% block title %}My booked events{% endblock %}
 
 {% block content %}
-<div class="hero-image" style="background-image: url({{ url_for('static', filename='img/hero2.jpg') }});">
-  <div class="div-1"></div>
-  <div class="container">
-    <div class="hero-text">
-      <h1 class="centered">My booked events</h1>
-    </div>
-    <div class="div-6"></div>
-  </div>
-</div>
-<hr>
 
-  <div class="row">
-    <div class="col-12 col-sm-6 col-lg-4 mb-3">
-      <div class="event-container">
-        <a href="">
-          <img class="img-fluid" src="{{ url_for('static', filename='img/football2.jpg') }}">
-        </a>
-        <div class="text-center">
-          <a href="">
-            <h4 class="">Basketball opens</h4>
-          </a>
-          <div class="row">
-            <div class="col">
-              <p>Order No:</p>
-            </div>
-            <div class="col">
-              <p>5904589103</p>
-            </div>
+
+<div class="container-fluid">
+  <div class="col-12 col-lg-10 mx-auto">
+    <div class="div-2"></div>
+    <h3>My booked events</h3>
+    <div class="div-1"></div>
+
+
+
+    <div class="row">
+      <div class="col-6">
+        <p>Event</p>
+      </div>
+      <div class="col-2">
+        <p>Order No.</p>
+      </div>
+      <div class="col-2">
+        <p>Ticket quantity</p>
+      </div>
+      <div class="col-2">
+        <p>Total cost</p>
+      </div>
+    </div>
+
+    {% if orders|length > 0 %}
+    {% for order in orders %}
+
+    <div class="my-event-container">
+      <div class="row">
+        <div class="col-6 d-flex">
+          <img class="img-fluid img-thumbnail float-left my-auto"
+            src="{{ url_for('main.download', filename=order.event.image) }}">
+          <div class="my-auto">
+            <p>{{ order.event.title }}</p>
+            <p>{{ order.event.formatted_time(order.event.start_time) }}</p>
+            <p>{{ order.event.address }}</p>
           </div>
-          <div class="row">
-            <div class="col">
-              <p>Booked on:</p>
-            </div>
-            <div class="col">
-              <p>5/08/2021</p>
+        </div>
+        <div class="col-2 d-flex">
+          <p class="my-auto">{{ order.order_id|string }}</p>
+        </div>
+        <div class="col-2 d-flex">
+          <p class="my-auto">{{ order.ticket_quantity }}</p>
+        </div>
+        <div class="col-2 d-flex">
+          <p class="my-auto">A${{ "%.2f"|format(order.total_cost) }}</p>
+          <div class="dropdown my-auto ms-auto">
+            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"></a>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" href="{{ url_for('main.view_details', event_id=order.event.event_id) }}">View page</a>
             </div>
           </div>
         </div>
       </div>
     </div>
+    <div class="div-1"></div>
+    {% endfor %}
+    {% else %}
+    <div class="div-1"></div>
+    <p>You have no booked events to display</p>
+    <div class="div-1"></div>
+    {% endif %}
+
   </div>
-  {% endblock %}
+</div>
+<div class="div-2"></div>
+{% endblock %}

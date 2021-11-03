@@ -12,24 +12,7 @@ from .models import User, Event
 from datetime import datetime
 
 
-# list of sports used by the application
-sports = [
-    'Soccer',
-    'Football',
-    'Netball',
-    'Basketball',
-    'Hockey'    
-]
-
-# list of statuses used by the application
-# These might have to be relocated later to a more appropriate spot
-statuses = [
-    'Upcoming',
-    'Inactive',
-    'Booked',
-    'Cancelled'
-]
-
+from .models import statuses, sports
 
 
 
@@ -157,10 +140,6 @@ class CommentForm(FlaskForm):
 
 class OrderForm(FlaskForm):
     ticket_quantity = IntegerField(label='')
-    max = 100
 
-    def validate_ticket_quantity(form, field):
-        if field.data > form.max:
-            raise ValidationError(message='The quantity of tickets must be at most {}'.format(form.max))
 
     

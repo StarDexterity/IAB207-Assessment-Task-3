@@ -14,6 +14,31 @@ def get_day(day:int):
 def get_month(month:int):
     return months[month]
 
+# list of sports used by the application
+sports = [
+    'Soccer',
+    'Football',
+    'Netball',
+    'Basketball',
+    'Hockey'    
+]
+
+# list of statuses used by the application
+# These might have to be relocated later to a more appropriate spot
+statuses = [
+    'Upcoming',
+    'Inactive',
+    'Booked',
+    'Cancelled'
+]
+
+UPCOMING, INACTIVE, BOOKED, CANCELLED = [
+    'Upcoming',
+    'Inactive',
+    'Booked',
+    'Cancelled'
+]
+
 
 
 class User(db.Model, UserMixin):
@@ -101,7 +126,7 @@ class Event(db.Model):
 class Order(db.Model):
     __tablename__ = 'orders'
     order_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    ticket_quantity = db.Column(db.Integer())
+    ticket_quantity = db.Column(db.Integer(), default=0)
     order_date = db.Column(db.DateTime())
     total_cost = db.Column(db.Float())
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
@@ -113,7 +138,11 @@ class Order(db.Model):
 
     @property
     def event(self) -> Event:
-        return User.query.filter_by(user_id=self.user_id).first()
+        return Event.query.filter_by(event_id=self.event_id).first()
+
+    @property
+    def total_cost(self) -> float:
+        return self.ticket_quantity * self.event.price
 
 
 class Comment(db.Model):

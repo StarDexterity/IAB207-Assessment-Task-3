@@ -13,7 +13,7 @@ from werkzeug.exceptions import NotFound
 from website import ALLOWED_EXTENSIONS, db
 from .forms import EventForm, CommentForm, OrderForm
 from .models import Event, Comment, Order
-
+from .models import BOOKED, UPCOMING, INACTIVE, CANCELLED
 
 bp = Blueprint('main', __name__)
 
@@ -108,8 +108,10 @@ def manage_events():
     return render_template('manage_events.html', events=current_user.events)
 
 @bp.route('/booked-events')
+@login_required
 def booked_events():
-    return render_template('booked_events.html')
+    orders = current_user.orders
+    return render_template('booked_events.html', orders=orders)
 
 
 @bp.route('/view-details/<event_id>', methods=['GET', 'POST'])
@@ -117,7 +119,6 @@ def view_details(event_id):
     event:Event = Event.query.filter_by(event_id=event_id).first()
     cform = CommentForm()
     oform = OrderForm()
-    oform.max = event.tickets_remaining
     if cform.validate_on_submit():
         text = cform.text.data
         user_id = current_user.user_id
@@ -129,9 +130,16 @@ def view_details(event_id):
     if oform.is_submitted():
         if oform.validate():
             user_id = current_user.user_id
-            new_order = Order()
+            ticket_quantity = oform.ticket_quantity.data
+            new_order = Order(ticket_quantity=ticket_quantity, order_date=datetime.now(), user_id=user_id, event_id=event_id)
             db.session.add(new_order)
             db.session.commit()
+
+            # if there are 0 remaing tickets, set status to booked
+            if event.tickets_remaining == 0:
+                event.status = BOOKED
+                db.session.commit()
+                
             return redirect(url_for('main.booked_events'))
         else:
             flash('Order attempt was unsuccessful')
@@ -139,6 +147,7 @@ def view_details(event_id):
 
 
 @bp.route('/delete_event/<event_id>')
+@login_required
 def delete_event(event_id):
     event:Event = Event.query.filter_by(event_id=event_id).first()
     if event is not None and event.is_owner:
@@ -148,6 +157,7 @@ def delete_event(event_id):
     
     
 @bp.route('/edit_event/<event_id>', methods=['GET', 'POST'])
+@login_required
 def edit_event(event_id):
     event:Event = Event.query.filter_by(event_id=event_id).first()
     if event is not None and event.is_owner:
