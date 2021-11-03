@@ -50,9 +50,6 @@
   </div>
 
 </div>
-</div>
-</div>
-</div>
 
 <div class="container-fluid">
   <div class="col-10 col-lg-8 mx-auto">
@@ -74,10 +71,6 @@
                 <h4>{{ event.title }}</h4>
               </a>
               <p class="mylead text-muted">By {{ event.user.username }}</p>
-              <!--
-                <p class="text-muted">{{ misc.get_day(event.start_time.weekday()) }}, {{ event.start_time.day}}
-                  {{misc.get_month(event.start_time.month - 1)}} - {{ event.venue }} - {{event.status}}</p>
-                -->
               <p>{{event.description[:100] }}<span class="text-muted">...</span></p>
               <!--Limited in length. Only a preview of the description-->
             </div>

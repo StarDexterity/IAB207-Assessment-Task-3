@@ -15,7 +15,7 @@ from website import ALLOWED_EXTENSIONS, db
 from .forms import EventForm, SearchForm, TestForm, CommentForm
 from .models import Event, Comment
 
-from . import misc
+
 
 bp = Blueprint('main', __name__)
 
@@ -39,7 +39,6 @@ def index():
         events = Event.query.all()
 
     return render_template('index.html', misc=misc, events=events, form=form)
-
 
 
 # serves images from uploads folder
@@ -67,16 +66,17 @@ def create_event():
         des = form.description.data
         sport = form.sport.data
 
-        start_date = form.start_date.data
-        start_time = form.start_time.data
 
         # merge date and time into a datetime object
+        start_date = form.start_date.data
+        start_time = form.start_time.data
         start_datetime = datetime(start_date.year, start_date.month, start_date.day, start_time.hour, start_time.minute, start_time.second)
-        end_date = form.end_date.data
-        end_time = form.end_time.data
         
         # merge date and time into a datetime object
+        end_date = form.end_date.data
+        end_time = form.end_time.data
         end_datetime = datetime(end_date.year, end_date.month, end_date.day, end_time.hour, end_time.minute, end_time.second)
+
         venue = form.venue.data
 
         # get address information from each input
@@ -119,7 +119,7 @@ def create_event():
 @bp.route('/manage-events')
 @login_required
 def manage_events():
-    return render_template('manage_events.html', events=current_user.events, misc=misc)
+    return render_template('manage_events.html', events=current_user.events)
 
 @bp.route('/booked-events')
 def booked_events():
@@ -129,27 +129,66 @@ def booked_events():
 @bp.route('/view-details/<event_id>', methods=['GET', 'POST'])
 def view_details(event_id):
     event:Event = Event.query.filter_by(event_id=event_id).first()
-    form = CommentForm()
-    if form.validate_on_submit():
-        text = form.text.data
+    cform = CommentForm()
+    oform = OrderForm()
+    oform.max = event.tickets_remaining
+    if cform.validate_on_submit():
+        text = cform.text.data
         user_id = current_user.user_id
         new_comment = Comment(text=text, user_id=user_id, event_id=event_id, date_of_creation=datetime.now())
         db.session.add(new_comment)
         db.session.commit()
         return redirect(url_for('main.view_details', event_id=event_id))
-    return render_template('view_details.html', event=event, form=form, misc=misc)
+
+    if oform.is_submitted():
+        if oform.validate():
+            user_id = current_user.user_id
+            new_order = Order()
+            db.session.add(new_order)
+            db.session.commit()
+            return redirect(url_for('main.booked_events'))
+        else:
+            flash('Order attempt was unsuccessful')
+    return render_template('view_details.html', event=event, oform=oform, cform=cform)
 
 
 @bp.route('/delete_event/<event_id>')
 def delete_event(event_id):
     event:Event = Event.query.filter_by(event_id=event_id).first()
-    if event.is_owner:
+    if event is not None and event.is_owner:
         db.session.delete(event)
         db.session.commit()
         return redirect(url_for('main.manage_events'))
     
     
+@bp.route('/edit_event/<event_id>', methods=['GET', 'POST'])
+def edit_event(event_id):
+    event:Event = Event.query.filter_by(event_id=event_id).first()
+    if event is not None and event.is_owner:
+        form = EventForm(obj=event)
+        if form.validate_on_submit():
+            # populate event object with form data
+            form.populate_event(event)
+            db.session.commit()
+            return redirect(url_for('main.manage_events'))
+        
+        form.start_time.data = event.start_time.time()
+        form.start_date.data = event.start_time.date()
+        form.end_time.data = event.end_time.time()
+        form.end_date.data = event.end_time.date()
+
+        street, city, postcode, state = event.address.split(',')
+        form.street.data = street
+        form.city.data = city
+        form.postcode.data = postcode
+        form.state.data = state
+        return render_template('create_event.html', form=form)
+
+
+
+
 # function for testing any html file in templates
 @bp.route('/test-render/<file>')
 def test_render(file):
     return render_template(file)
+
