@@ -12,7 +12,37 @@ from .models import User, Event
 from datetime import datetime
 
 
+<<<<<<< HEAD
 from .models import statuses, sports
+=======
+search_sports = [
+    'All',
+    'Soccer',
+    'Football',
+    'Netball',
+    'Basketball',
+    'Hockey'    
+]
+
+# list of sports used by the application
+sports = [
+    'Soccer',
+    'Football',
+    'Netball',
+    'Basketball',
+    'Hockey'    
+]
+
+# list of statuses used by the application
+# These might have to be relocated later to a more appropriate spot
+statuses = [
+    'Upcoming',
+    'Inactive',
+    'Booked',
+    'Cancelled'
+]
+
+>>>>>>> 2359b7415be2d812e27e2937f98a5cfa52a6f437
 
 
 
@@ -26,7 +56,11 @@ class LoginForm(FlaskForm):
 
     submit = SubmitField("Login")
 
+class SearchForm(FlaskForm):
+    category = SelectField(choices=search_sports, validators=[InputRequired()])
+    search=StringField("Search", validators=[InputRequired('Please search for the events name or creator')])
 
+    submit = SubmitField("Search")
 
 
 
@@ -142,4 +176,7 @@ class OrderForm(FlaskForm):
     ticket_quantity = IntegerField(label='')
 
 
-    
+# misc test form
+class TestForm(FlaskForm):
+    message = StringField()
+

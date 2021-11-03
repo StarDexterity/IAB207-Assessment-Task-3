@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
 {% block title %}Index{% endblock %}
 
 {% block content %}
@@ -8,7 +9,12 @@
   <div class="container hero-text-center">
     <h1>Community driven event management</h1>
     <div class="div-1"></div>
+<<<<<<< HEAD
     <p>MySports platform was developed out of a need for a one-stop place to find tickets to sporting events all around
+=======
+    <p>MySports platform was developed out of a need for a one-stop place to find ticket_quantity to sporting events all
+      around
+>>>>>>> 2359b7415be2d812e27e2937f98a5cfa52a6f437
       the world. We work as a team to get you to the sideline, enjoying the sports you love. That we love. Through our
       shared passion for all things sporting we hope to give ubiquitous access to the games around you, whether they are
       Grand Finals or community games. Mysports, your sports, our-sports.</p>
@@ -26,33 +32,34 @@
 
 <div class="container">
   <div class="row justify-content-center mt-5 pb-4">
-    <div class="col-md-12">
+    <div class="col-12">
       <div class="card shadow p-5 mb-5 bg-light" id="search">
-        <h1 class="text-center mb-3">Search by title or user...</h1>
-        <br>
-        <form class="d-flex">
-          <select class="me-2 pe-5 py-2" id="category" name="category">
-            <option value="all" selected>All</option>
-            <option value="soccer">Soccer</option>
-            <option value="football">Football</option>
-            <option value="netball">Netball</option>
-            <option value="basketball">Basketball</option>
-            <option value="hockey">Hockey</option>
-          </select>
-          <input class="form-control me-2 pe-5 py-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
-
+        <h1 class="text-center mb-3">Search for the sporting event or creator...</h1>
+        <!--{{ form.csrf_token()}}-->
+        <div class="row">
+          <div class="col-2">
+            {{ wtf.form_field(form.category, class='form-select')}}
+          </div>
+          <div class="col-8">
+            {{ wtf.form_field(form.search, class='form-control')}}
+          </div>
+          <div class="col-2">
+            <div href="#search">
+              {{ wtf.form_field(form.submit, class='btn btn-outline-success')}}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
+
 </div>
 
 <div class="container-fluid">
   <div class="col-10 col-lg-8 mx-auto">
     <div class="div-3"></div>
     <div id="popular">
-      <h1 class="mytitle">Popular</h1>
+      <h1 class="mytitle">{{ form.category.data }} Events</h1>
 
       <div class="row">
         {% for event in events %}

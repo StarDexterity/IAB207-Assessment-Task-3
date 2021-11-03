@@ -7,25 +7,38 @@ from flask import current_app as app
 from flask import flash, redirect, render_template, request, session, url_for
 from flask_login import current_user, login_required, login_url 
 import flask_login
+from sqlalchemy.orm import query
 from werkzeug.utils import secure_filename
 from werkzeug.exceptions import NotFound
 
 from website import ALLOWED_EXTENSIONS, db
-from .forms import EventForm, CommentForm, OrderForm
+from .forms import EventForm, CommentForm, OrderForm, SearchForm
 from .models import Event, Comment, Order
 from .models import BOOKED, UPCOMING, INACTIVE, CANCELLED
 
 bp = Blueprint('main', __name__)
+
 
 # checks if filename has an allowed file extension
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@bp.route('/')
+
+@bp.route('/', methods=['GET', 'POST'])
 def index():
-    events = Event.query.all()
-    return render_template('index.html', events=events)
+    form = SearchForm()
+    category = SearchForm.category.data
+    
+    selected_type:type = Event.query.filter_by(category=category).all()
+
+    if form.category == 'All':
+        events = Event.query.all()
+    else:
+        events = Event.query.all()
+
+    return render_template('index.html', events=events, form=form)
+
 
 # serves images from uploads folder
 # use 'url_for("download", filename=name)' in html to use this function
