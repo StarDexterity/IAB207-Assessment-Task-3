@@ -107,14 +107,13 @@ class EventForm(FlaskForm):
     postcode = StringField(validators=[InputRequired()])
 
     status = SelectField(choices=statuses, validators=[InputRequired()])
-    ticket_quantity = IntegerField(validators=[InputRequired()])
+    tickets_total = IntegerField(validators=[InputRequired()])
     price = FloatField(validators=[InputRequired()])
 
     submit = SubmitField('Submit')
 
     def populate_event(self, event:Event):
         event.title = self.title.data
-        event.image = self.image.data
         event.description = self.description.data
         event.sport = self.sport.data
 
@@ -141,7 +140,7 @@ class EventForm(FlaskForm):
 
         event.status = self.status.data
         event.price = self.price.data
-        event.tickets_total = self.ticket_quantity.data
+        event.tickets_total = self.tickets_total.data
 
     
 
