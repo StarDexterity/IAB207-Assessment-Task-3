@@ -22,25 +22,6 @@ search_sports = [
     'Hockey'    
 ]
 
-# list of sports used by the application
-sports = [
-    'Soccer',
-    'Football',
-    'Netball',
-    'Basketball',
-    'Hockey'    
-]
-
-# list of statuses used by the application
-# These might have to be relocated later to a more appropriate spot
-statuses = [
-    'Upcoming',
-    'Inactive',
-    'Booked',
-    'Cancelled'
-]
-
-
 #creates the login information
 class LoginForm(FlaskForm):
     username=StringField("User Name", validators=[InputRequired('Enter user name')])
