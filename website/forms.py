@@ -11,6 +11,15 @@ import re
 from .models import User
 
 
+search_sports = [
+    'All',
+    'Soccer',
+    'Football',
+    'Netball',
+    'Basketball',
+    'Hockey'    
+]
+
 # list of sports used by the application
 sports = [
     'Soccer',
@@ -40,7 +49,11 @@ class LoginForm(FlaskForm):
 
     submit = SubmitField("Login")
 
+class SearchForm(FlaskForm):
+    category = SelectField(choices=search_sports, validators=[InputRequired()])
+    search=StringField("Search", validators=[InputRequired('Please search for the events name or creator')])
 
+    submit = SubmitField("Search")
 
 
 
@@ -124,3 +137,4 @@ class CommentForm(FlaskForm):
 # misc test form
 class TestForm(FlaskForm):
     message = StringField()
+
