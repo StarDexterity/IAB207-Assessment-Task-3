@@ -56,7 +56,9 @@
           </div>
         </div>
         {% if not event.is_owner %}
-        {% if current_user.is_authenticated %}
+        {% if event.status == 'booked' or event.status == 'cancelled' %}
+        <p>Cannot book, event is booked or cancelled</p>
+        {% elif current_user.is_authenticated %}
         <button type="button" data-bs-toggle="modal" data-bs-target="#ticketmodal"
           class="btn btn-success float-right">Book ticket</button>
         {% else %}
