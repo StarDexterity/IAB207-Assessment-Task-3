@@ -32,6 +32,8 @@ def index():
     category = form.category.data
     search = form.search.data
     error = None
+    anything_found = ''
+
 
     c1:Event = Event.query.filter_by(sport=category).first()
     s1:Event = Event.query.filter_by(title=search).first()
@@ -46,11 +48,14 @@ def index():
             searched_user = s2.user_id
             events = Event.query.filter_by(user_id=searched_user).all()
 
-    elif ((category == 'All') or (c1 is not None)) and ((s1 is None) or (s2 is None)):
-        if category == 'All':
-            events = Event.query.all()
-        else:
-            events = Event.query.filter_by(sport=category).all()
+    elif (category is None) and ((s1 is None) and (s2 is None)):
+        category = 'All'
+        events = Event.query.all()
+
+    elif ((c1 is None) or (c1 is not None)) and (s1 is None) and (s2 is None):
+        anything_found = 'Nothing was found matching those search terms'
+        category = 'All'
+        events = Event.query.all()
 
     elif (c1 is not None) and ((s1 is not None) or (s2 is not None)):
         if (s1 is not None):
@@ -59,12 +64,14 @@ def index():
             searched_user = s2.user_id
             events = Event.query.filter_by(user_id=searched_user, sport=category).all()
 
-    elif (c1 is None) or ((s1 is None) or (s2 is None)):
-        category = 'All'
-        events = Event.query.all()
+    elif ((category == 'All') or (c1 is not None)) and (search is None):
+        if category == 'All':
+            events = Event.query.all()
+        else:
+            events = Event.query.filter_by(sport=category).all()
 
 
-    return render_template('index.html', events=events, form=form, selected_category=category)
+    return render_template('index.html', events=events, form=form, selected_category=category, anything_found=anything_found)
 
 
 # serves images from uploads folder
