@@ -13,7 +13,7 @@ from werkzeug.exceptions import NotFound
 
 from website import ALLOWED_EXTENSIONS, db
 from .forms import EventForm, CommentForm, OrderForm, SearchForm
-from .models import Event, Comment, Order
+from .models import User, Event, Comment, Order
 from .models import BOOKED, UPCOMING, INACTIVE, CANCELLED
 
 bp = Blueprint('main', __name__)
@@ -29,11 +29,25 @@ def allowed_file(filename):
 def index():
     form = SearchForm()
     category = form.category.data
-    
-    if form.category == 'All':
+    search = form.search.data
+    error = None
+
+    c1:Event = Event.query.filter_by(sport=category).first()
+    s1:Event = Event.query.filter_by(title=search).first()
+    s2:User = User.query.filter_by(username=search).first()
+
+    if (category == 'All' or category is None) and search is None:
         events = Event.query.all()
-    else:
+        error = "All items selected no search required"
+    elif (c1 is None) or ((s1 is None) and (s2 is None)):
         events = Event.query.all()
+        error = "No item found"
+
+    if error is not None:
+        if (category == 'All') and (s1 is not None):
+            events = Event.query.filter_by(title=search, sport=category).all()
+        else:
+            events = Event.query.all()
 
     return render_template('index.html', events=events, form=form)
 
