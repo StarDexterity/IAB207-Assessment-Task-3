@@ -29,21 +29,23 @@
   <div class="row justify-content-center mt-5 pb-4 d-flex">
     <div class="col-12">
       <div class="card shadow p-5 mb-5 bg-light" id="search">
-        <h1 class="text-center mb-3">Search for the sporting event or creator...</h1>
-        <!--{{ form.csrf_token()}}-->
-        <div class="row">
-          <div class="col-2">
-            {{ wtf.form_field(form.category, class='form-select')}}
-          </div>
-          <div class="col-8">
-            {{ wtf.form_field(form.search, class='form-control')}}
-          </div>
-          <div class="col-2 mt-auto">
-            <div href="#search">
-              {{ wtf.form_field(form.submit, class='btn btn-outline-success bottom')}}
+        <form action="" method="post">
+          <h1 class="text-center mb-3">Search for the sporting event or creator...</h1>
+          {{ form.csrf_token()}}
+          <div class="row">
+            <div class="col-2">
+              {{ wtf.form_field(form.category, class='form-select')}}
+            </div>
+            <div class="col-8">
+              {{ wtf.form_field(form.search, class='form-control')}}
+            </div>
+            <div class="col-2 mt-auto">
+              <div href="#search">
+                {{ wtf.form_field(form.submit, class='btn btn-outline-success bottom')}}
+              </div>
             </div>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   </div>
