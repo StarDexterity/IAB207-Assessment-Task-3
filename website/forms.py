@@ -34,7 +34,7 @@ class LoginForm(FlaskForm):
 
 class SearchForm(FlaskForm):
     category = SelectField(choices=search_sports, validators=[InputRequired()])
-    search=StringField("Search", validators=[InputRequired('Please search for the events name or creator')])
+    search=StringField("Search")
 
     submit = SubmitField("Search")
 

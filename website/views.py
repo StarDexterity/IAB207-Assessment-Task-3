@@ -8,6 +8,7 @@ from flask import flash, redirect, render_template, request, session, url_for
 from flask_login import current_user, login_required, login_url 
 import flask_login
 from sqlalchemy.orm import query
+from sqlalchemy import and_, or_
 from werkzeug.utils import secure_filename
 from werkzeug.exceptions import NotFound
 
@@ -36,20 +37,34 @@ def index():
     s1:Event = Event.query.filter_by(title=search).first()
     s2:User = User.query.filter_by(username=search).first()
 
-    if (category == 'All' or category is None) and search is None:
-        events = Event.query.all()
-        error = "All items selected no search required"
-    elif (c1 is None) or ((s1 is None) and (s2 is None)):
-        events = Event.query.all()
-        error = "No item found"
+    events = Event.query.all()
+    
+    if (category == 'All') and ((s1 is not None) or (s2 is not None)):
+        if (s1 is not None):
+            events = Event.query.filter_by(title=search).all()
+        elif (s2 is not None):
+            searched_user = s2.user_id
+            events = Event.query.filter_by(user_id=searched_user).all()
 
-    if error is not None:
-        if (category == 'All') and (s1 is not None):
-            events = Event.query.filter_by(title=search, sport=category).all()
-        else:
+    elif ((category == 'All') or (c1 is not None)) and ((s1 is None) or (s2 is None)):
+        if category == 'All':
             events = Event.query.all()
+        else:
+            events = Event.query.filter_by(sport=category).all()
 
-    return render_template('index.html', events=events, form=form)
+    elif (c1 is not None) and ((s1 is not None) or (s2 is not None)):
+        if (s1 is not None):
+            events = Event.query.filter_by(title=search, sport=category).all()
+        elif (s2 is not None):
+            searched_user = s2.user_id
+            events = Event.query.filter_by(user_id=searched_user, sport=category).all()
+
+    elif (c1 is None) or ((s1 is None) or (s2 is None)):
+        category = 'All'
+        events = Event.query.all()
+
+
+    return render_template('index.html', events=events, form=form, selected_category=category)
 
 
 # serves images from uploads folder
