@@ -12,7 +12,7 @@ from werkzeug.utils import secure_filename
 from website import ALLOWED_EXTENSIONS, db
 from .forms import EventForm, CommentForm, OrderForm, SearchForm
 from .models import User, Event, Comment, Order
-from .models import BOOKED, UPCOMING, INACTIVE, CANCELLED, ALL
+from .models import BOOKED, UPCOMING, INACTIVE, CANCELLED, ALL, sports
 from .misc import set_current_event
 
 
@@ -37,40 +37,37 @@ def allowed_file(filename):
 @bp.route('/', methods=['GET', 'POST'])
 def index():
     form = SearchForm()
-    category = form.category.data
-    search = '%{}%'.format(form.search.data)
-    error = None
-    anything_found = 'Nothing is currently within the application please add an event or wait for new events to be added'
-    passed = 1
+    anything_found = ''
 
-    events = Event.query.all()
-    c1:Event = Event.query.filter_by(sport=category).first()
+    if form.validate_on_submit():
+        category = form.category.data
+        search = '%{}%'.format(form.search.data)
+        error = None
+        events = []
 
-    
-    # if category is all make this query else make a query with an additional check for category
-    s1 = None
-    if category == ALL:
-        s1:Event = Event.query.filter(or_(Event.title.like(search), User.username.like(search))).all()
-    else:
-        s1:Event = Event.query.filter(and_(or_(Event.title.like(search), User.username.like(search)), Event.title.like(category))).all()
+        
+        # if category is all make this query else make a query with an additional check for category
+        s1 = None
+        if category == ALL:
+            s1:Event = Event.query.filter(or_(Event.title.like(search), User.username.like(search))).all()
+        elif(category in sports):
+            s1:Event = Event.query.filter(and_(or_(Event.title.like(search), User.username.like(search)), Event.sport.like(category))).all()
 
-    if s1 is None:
-        passed = 0
-        pass
-    else:
-        events = s1
+        
 
-    #if nothing above has been passed successfully then it definetly could not be found and can be assumed that the values haven't been
-    # assigned yet or nothing at all could be found
-    if passed == 0:
-        if category is None:
-            category = 'All'
-            anything_found = ''
+        #if nothing above has been passed successfully then it definetly could not be found and can be assumed that the values haven't been
+        # assigned yet or nothing at all could be found
+        if len(s1) != 0:
+            events = s1
         else:
             anything_found = 'Nothing was found matching those search terms'
-            category = 'All'
-            events = Event.query.all()
-            passed = 1
+            category = ''
+            
+    else:
+        events = Event.query.all()
+        category = 'All'
+
+        
 
     return render_template('index.html', events=events, form=form, selected_category=category, anything_found=anything_found)
 
