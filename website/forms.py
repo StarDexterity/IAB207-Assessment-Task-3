@@ -13,7 +13,7 @@ from wtforms.validators import (Email, EqualTo, InputRequired, Length,
 from .misc import get_current_event
 from .models import BOOKED, CANCELLED, Event, User, sports, statuses
 
-
+ALL = 'All'
 
 #creates the login information
 class LoginForm(FlaskForm):

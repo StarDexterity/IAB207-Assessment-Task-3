@@ -40,6 +40,7 @@ UPCOMING, INACTIVE, BOOKED, CANCELLED = [
     'Booked',
     'Cancelled'
 ]
+ALL ='All'
 
 
 

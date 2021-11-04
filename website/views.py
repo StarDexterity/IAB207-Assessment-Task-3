@@ -12,7 +12,7 @@ from werkzeug.utils import secure_filename
 from website import ALLOWED_EXTENSIONS, db
 from .forms import EventForm, CommentForm, OrderForm, SearchForm
 from .models import User, Event, Comment, Order
-from .models import BOOKED, UPCOMING, INACTIVE, CANCELLED
+from .models import BOOKED, UPCOMING, INACTIVE, CANCELLED, ALL
 from .misc import set_current_event
 
 
@@ -48,9 +48,15 @@ def index():
 
     
     # if category is all make this query else make a query with an additional check for category
-    s1:Event = Event.query.filter(or_(Event.title.like(search), User.username.like(search))).all()
+    s1 = None
+    if category == ALL:
+        s1:Event = Event.query.filter(or_(Event.title.like(search), User.username.like(search))).all()
+    else:
+        s1:Event = Event.query.filter(and_(or_(Event.title.like(search), User.username.like(search)), Event.title.like(category))).all()
 
-
+    if s1 is None:
+        # do something
+        pass
     s2:User = User.query.filter(User.username.like(search)).first()
 
     events = Event.query.all()
