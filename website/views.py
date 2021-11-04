@@ -38,15 +38,19 @@ def allowed_file(filename):
 def index():
     form = SearchForm()
     category = form.category.data
-    search = '%'
+    search = '%{}%'.format(form.search.data)
     error = None
     anything_found = 'Nothing is currently within the application please add an event or wait for new events to be added'
     passed = 0
 
     events = Event.query.all()
-
     c1:Event = Event.query.filter_by(sport=category).first()
-    s1:Event = Event.query.filter(or_(Event.title.like(search), User.username.like(search))).first()
+
+    
+    # if category is all make this query else make a query with an additional check for category
+    s1:Event = Event.query.filter(or_(Event.title.like(search), User.username.like(search))).all()
+
+
     s2:User = User.query.filter(User.username.like(search)).first()
 
     events = Event.query.all()
