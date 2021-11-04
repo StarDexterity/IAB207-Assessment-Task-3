@@ -6,10 +6,7 @@ from flask import send_from_directory
 from flask import current_app as app
 from flask import flash, redirect, render_template, request, session, url_for, abort
 from flask_login import current_user, login_required, login_url
-import flask_login
-from sqlalchemy.orm import query
 from sqlalchemy import and_, or_
-from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 
 from website import ALLOWED_EXTENSIONS, db
@@ -20,6 +17,15 @@ from .misc import set_current_event
 
 
 bp = Blueprint('main', __name__)
+
+# error handlers for returning a custom error page when something goes wrong
+@bp.errorhandler(404)
+def not_found_error(error):
+    return render_template('404.html'), 404
+
+@bp.errorhandler(500)
+def not_found_error(error):
+    return render_template('500.html'), 500
 
 
 # checks if filename has an allowed file extension
@@ -268,3 +274,7 @@ def edit_event(event_id):
         form.address.data = event.address
         return render_template('create_event.html', form=form)
 
+
+@bp.errorhandler(404)
+def not_found_error(error):
+    return render_template('404.html'), 404
