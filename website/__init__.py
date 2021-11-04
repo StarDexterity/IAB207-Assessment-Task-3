@@ -3,11 +3,12 @@ from flask import Flask, flash, redirect, url_for, request
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_manager
+import os
 
 
 db = SQLAlchemy()
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
-UPLOAD_FOLDER = 'static\\img\\uploaded'
+UPLOAD_FOLDER = os.path.join('static', 'img', 'uploaded')
 
 
 #create a function that creates a web application
