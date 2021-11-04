@@ -6,7 +6,6 @@ from flask import send_from_directory
 from flask import current_app as app
 from flask import flash, redirect, render_template, request, session, url_for
 from flask_login import current_user, login_required, login_url 
-import flask_login
 from sqlalchemy.orm import query
 from sqlalchemy import and_, or_
 from werkzeug.datastructures import FileStorage
@@ -33,7 +32,7 @@ def index():
     category = form.category.data
     search = form.search.data
     error = None
-    anything_found = ''
+    anything_found = 'Nothing is currently within the application please add an event or wait for new events to be added'
     passed = 0
 
     events = Event.query.all()
@@ -49,29 +48,35 @@ def index():
         if category == 'All':
             events = Event.query.all()
             passed = 1
+            anything_found = ''
         elif (c1 is not None):
             events = Event.query.filter_by(sport=category).all()
             passed = 1
+            anything_found = ''
 
     #if search filled and found and category = all
     elif (category == 'All') and ((s1 is not None) or (s2 is not None)):
         if (s1 is not None):
             events = Event.query.filter_by(title=search).all()
             passed = 1
+            anything_found = ''
         elif (s2 is not None):
             searched_user = s2.user_id
             events = Event.query.filter_by(user_id=searched_user).all()
             passed = 1
+            anything_found = ''
 
     #if search filled and found with correct category
     elif (c1 is not None) and ((s1 is not None) or (s2 is not None)):
         if (s1 is not None):
             events = Event.query.filter_by(title=search, sport=category).all()
             passed = 1
+            anything_found = ''
         elif (s2 is not None):
             searched_user = s2.user_id
             events = Event.query.filter_by(user_id=searched_user, sport=category).all()
             passed = 1
+            anything_found = ''
 
     #if nothing can be found
     elif ((c1 is None) or (c1 is not None)) and (s1 is None) and (s2 is None):
@@ -86,6 +91,7 @@ def index():
     if passed == 0:
         if category is None:
             category = 'All'
+            anything_found = ''
         else:
             anything_found = 'Nothing was found matching those search terms'
             category = 'All'

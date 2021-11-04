@@ -72,6 +72,7 @@
               <a href="{{ url_for('.view_details', event_id=event.event_id) }}" class="my-link">
                 <h4>{{ event.title }}</h4>
               </a>
+              <h6 class="text-primary">Status: {{event.status}}</h6>
               <p class="mylead text-muted">By {{ event.user.username }}</p>
               <p>{{event.description[:100] }}<span class="text-muted">...</span></p>
               <!--Limited in length. Only a preview of the description-->
