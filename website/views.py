@@ -4,14 +4,13 @@ from datetime import datetime
 from flask import Blueprint
 from flask import send_from_directory
 from flask import current_app as app
-from flask import flash, redirect, render_template, request, session, url_for
+from flask import flash, redirect, render_template, request, session, url_for, abort
 from flask_login import current_user, login_required, login_url
 import flask_login
 from sqlalchemy.orm import query
 from sqlalchemy import and_, or_
 from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
-from werkzeug.exceptions import NotFound
 
 from website import ALLOWED_EXTENSIONS, db
 from .forms import EventForm, CommentForm, OrderForm, SearchForm
@@ -103,11 +102,7 @@ def index():
 @bp.route('/uploads')
 def download(filename=None):
     if filename is not None:
-        try:
-            return send_from_directory(os.path.join(app.root_path, app.config["UPLOAD_FOLDER"]), filename)
-        except NotFound as nf:
-            print('file with filename %s was not found', filename)
-            return send_from_directory(os.path.join(app.root_path, 'static\\img'), 'no_image.png')
+        return send_from_directory(os.path.join(app.root_path, app.config["UPLOAD_FOLDER"]), filename)
     else:
         return send_from_directory(os.path.join(app.root_path, 'static\\img'), 'no_image.png')
     
@@ -185,7 +180,7 @@ def view_details(event_id):
     event:Event = Event.query.filter_by(event_id=event_id).first()
     # if event cannot be found by query, raise a not found 404 exception
     if event is None:
-        abort
+        abort(404)
 
 
     set_current_event(event)
@@ -224,7 +219,7 @@ def view_details(event_id):
 def delete_event(event_id):
     event:Event = Event.query.filter_by(event_id=event_id).first()
     if event is None:
-        raise NotFound
+        abort(404)
 
     if event.is_owner:
         db.session.delete(event)
@@ -237,7 +232,7 @@ def delete_event(event_id):
 def edit_event(event_id):
     event:Event = Event.query.filter_by(event_id=event_id).first()
     if event is None:
-        raise NotFound
+        abort(404)
 
 
     set_current_event(event)
