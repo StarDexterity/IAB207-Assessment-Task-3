@@ -9,6 +9,7 @@ from flask_login import current_user, login_required, login_url
 import flask_login
 from sqlalchemy.orm import query
 from sqlalchemy import and_, or_
+from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 from werkzeug.exceptions import NotFound
 
@@ -142,14 +143,14 @@ def create_event():
         addr = ','.join([street, city, postcode, state])
 
         status = form.status.data
-        ticket_quantity = form.ticket_quantity.data
+        tickets_total = form.tickets_total.data
         price = form.price.data
 
         user_id = current_user.user_id
 
         new_event = Event(title=title, description=des, sport=sport, venue=venue, address=addr, 
             start_time=start_datetime, end_time=end_datetime, status=status, 
-            ticket_quantity=ticket_quantity, price=price, user_id=user_id)
+            tickets_total=tickets_total, price=price, user_id=user_id)
         db.session.add(new_event)
 
         # checks for image file and authenticates it
@@ -186,6 +187,7 @@ def view_details(event_id):
     event:Event = Event.query.filter_by(event_id=event_id).first()
     cform = CommentForm()
     oform = OrderForm()
+    oform.event_id = event_id
     if cform.validate_on_submit():
         text = cform.text.data
         user_id = current_user.user_id
@@ -229,9 +231,20 @@ def edit_event(event_id):
     event:Event = Event.query.filter_by(event_id=event_id).first()
     if event is not None and event.is_owner:
         form = EventForm(obj=event)
+        form.image.data = None
+        
         if form.validate_on_submit():
             # populate event object with form data
             form.populate_event(event)
+
+             # checks for image file and authenticates it
+            image_file = form.image.data
+            if (image_file and allowed_file(image_file.filename)):
+                filename = secure_filename(image_file.filename)
+                path = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'], filename)
+                image_file.save(path)
+                event.image = filename
+
             db.session.commit()
             return redirect(url_for('main.manage_events'))
         

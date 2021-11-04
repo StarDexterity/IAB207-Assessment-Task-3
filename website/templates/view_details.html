@@ -6,7 +6,7 @@
 {% block content %}
 <div class="div-3"></div>
 <div class="container-fluid">
-  <div class="col col-md-8 mx-auto">
+  <div class="col-11 col-sm-9 mx-auto">
 
     {% include "messages.html" %}
 
@@ -14,141 +14,159 @@
       <div class="col-lg-7">
         <img class="image-centered" src="{{ url_for('.download', filename=event.image) }}">
       </div>
-      <div class="col-lg-5">
-        <div class="centered">
-          <h4>{{ event.title }}</h4>
-          <p class="mylead text-muted">By {{ event.user.username }}</p>
-        </div>
-        <div class="row">
-          <div class="col">
-            <p>Location:</p>
-          </div>
-          <div class="col-9">
-            <p>{{ event.address }}</p>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col">
-            <p>Time:</p>
-          </div>
-          <div class="col-9">
-            <p>{{ event.formatted_time(event.start_time) }} - {{ event.formatted_time(event.start_time) }}</p>
-          </div>
-        </div>
+      <div class="col-lg-5 d-flex flex-column">
+        <h4>{{ event.title }}</h4>
+        <p class="mylead text-muted">By {{ event.user.username }}</p>
+        <div class="div-6"></div>
+        <p class="mt-auto me-2">A${{ event.price }}</p>
+      </div>
+    </div>
+    {% if not event.is_owner %}
+    {% if event.status == 'booked' or event.status == 'cancelled' %}
+    <p>Cannot book, event is booked or cancelled</p>
+    {% elif current_user.is_authenticated %}
+    <button class="btn btn-success float-right" type="button" data-bs-toggle="modal" data-bs-target="#ticketmodal">Book
+      ticket</button>
+    {% else %}
+    <a href="{{ url_for('auth.login', next=url_for(request.endpoint, **request.view_args)) }}"
+      class="btn btn-secondary float-right" id="order-button">Login to book ticket</a>
+    {% endif %}
+    {% endif %}
 
+
+    <div class="div-6"></div>
+
+    <div class="row">
+      <div class="col-md-7">
+        <h3 class="mytitle centered">About the event</h3>
+
+
+        <p style="white-space: pre-line">
+          {{ event.description }}
+        </p>
+      </div>
+
+      <div class="col-md-1"></div>
+
+      <div class="col-md-4">
+        <h5>Important information</h5>
+
+        <div class="div-1"></div>
+        <p><strong>Location</strong></p>
+        <p>{{ event.venue }}</p>
+        <p>{{ event.address }}</p>
         <br>
+        <p><strong>Starting</strong></p>
+        <p>{{ event.formatted_time(event.start_time) }}</p>
+        <p><strong>Ending</strong></p>
+        <p>{{ event.formatted_time(event.end_time) }}</p>
+
+
+        <div class="div-1"></div>
+        <h5>Additional Information</h5>
+        <div class="div-1"></div>
 
         <div class="row">
           <div class="col">
-            <p>Price:</p>
+            <p><strong>Status:</strong></p>
           </div>
-          <div class="col-9">
-            <p>${{ event.price }}</p>
-          </div>
-        </div>
-
-        <div class="row">
           <div class="col">
-            <p>Status:</p>
-          </div>
-          <div class="col-9">
             <p>{{ event.status }}</p>
           </div>
         </div>
-        {% if not event.is_owner %}
-        {% if event.status == 'booked' or event.status == 'cancelled' %}
-        <p>Cannot book, event is booked or cancelled</p>
-        {% elif current_user.is_authenticated %}
-        <button type="button" data-bs-toggle="modal" data-bs-target="#ticketmodal"
-          class="btn btn-success float-right">Book ticket</button>
-        {% else %}
-        <a href="{{ url_for('auth.login', next=url_for(request.endpoint, **request.view_args)) }}"
-          class="btn btn-secondary">Login to book ticket</a>
-        {% endif %}
-        {% endif %}
-      </div>
-    </div>
 
-
-
-
-
-    <div class="div-2"></div>
-    <h3 class="mytitle centered">About</h3>
-    <div class="div-2"></div>
-
-    <p style="white-space: pre-line">
-      {{ event.description }}
-    </p>
-
-    <div class="div-3"></div>
-    <h2 class="mytitle">Comment</h2>
-    <hr>
-    <!--If user is authenticated display proper comment form, else display dummy one that redirects to login page-->
-    <div class="form-group">
-      <form action="" method="post">
-        {{ cform.csrf_token()}}
-        {{ wtf.form_field(cform.text, class='form-control', style='resize: none', rows='3',
-        placeholder='Add a comment...')}}
-
-
-        {% if current_user.is_authenticated %}
-        <button type="submit" class="btn btn-primary float-right mt-1" type="submit">Post</button>
-        {% else %}
-        <a href="{{ url_for('auth.login', next=url_for(request.endpoint, **request.view_args)) }}"
-          class="btn btn-secondary float-right mt-1">Login to Comment</a>
-        {% endif %}
-      </form>
-    </div>
-
-
-    <div class="div-3"></div>
-
-
-    {% for comment in event.comments %}
-    <div class="comment-container">
-      <div class="comment-header">
-        <p><strong>{{ comment.user.username }}</strong> - {{ comment.date_of_creation.strftime("%d/%m/%Y at %H:%M:%S")
-          }}</p>
-      </div>
-      <p class="comment-text">{{ comment.text }}</p>
-    </div>
-    {% endfor %}
-  </div>
-</div>
-
-
-
-<!-- Book ticket modal -->
-<div class="modal fade" id="ticketmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
-  aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <div>
-          <h4>{{ event.title }}</h4>
-          <p class="mylead text-muted">By {{ event.user.username }}</p>
-        </div>
-        <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal">
-      </div>
-      <div class="modal-body">
-        <div class="d-flex">
-          <p class="mylead text-muted">Price: A${{ event.price }}</p>
-          <div class="div-1"></div>
-          <p class="mylead text-muted">Remaining tickets: {{ event.tickets_remaining|string }}</p>
-        </div>
-        <form method="post">
-          {{ oform.csrf_token()}}
-          <div class="form-group row">
-            <label for="qty" class="col-2 col-form-label">Quantity:</label>
-            <div class="col-5">
-              {{ wtf.form_field(oform.ticket_quantity, type=number, class='form-control') }}
-            </div>
+        <div class="row">
+          <div class="col">
+            <p><strong>Type:</strong></p>
           </div>
-          <button type="submit" class="btn btn-success float-right">Checkout</button>
-        </form>
+          <div class="col">
+            <p>{{ event.sport }}</p>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <p><strong>Total tickets:</strong></p>
+          </div>
+          <div class="col">
+            <p>{{ event.tickets_total }}</p>
+          </div>
+        </div>
+      </div>
+
+
+
+      <div class="div-3"></div>
+
+      <h2 class="mytitle">Comment</h2>
+      <hr>
+      <div class="col-10 mx-auto">
+        <!--If user is authenticated display proper comment form, else display dummy one that redirects to login page-->
+        <div class="form-group">
+          <form action="" method="post">
+            {{ cform.csrf_token()}}
+            {{ wtf.form_field(cform.text, class='form-control', style='resize: none', rows='3',
+            placeholder='Add a comment...')}}
+
+
+            {% if current_user.is_authenticated %}
+            <button type="submit" class="btn btn-primary float-right mt-1" type="submit">Post</button>
+            {% else %}
+            <a href="{{ url_for('auth.login', next=url_for(request.endpoint, **request.view_args)) }}"
+              class="btn btn-secondary float-right mt-1">Login to Comment</a>
+            {% endif %}
+          </form>
+        </div>
+      </div>
+
+
+      <div class="div-3"></div>
+
+
+      {% for comment in event.comments %}
+      <div class="comment-container">
+        <div class="comment-header">
+          <p><strong>{{ comment.user.username }}</strong> - {{ comment.date_of_creation.strftime("%d/%m/%Y at %H:%M:%S")
+            }}</p>
+        </div>
+        <p class="comment-text">{{ comment.text }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+
+
+  <!-- Book ticket modal -->
+  <div class="modal fade" id="ticketmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div>
+            <h4>{{ event.title }}</h4>
+            <p class="mylead text-muted">By {{ event.user.username }}</p>
+          </div>
+          <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="modal">
+        </div>
+        <div class="modal-body">
+          <div class="d-flex">
+            <p class="mylead text-muted">Price: A${{ event.price }}</p>
+            <div class="div-1"></div>
+            <p class="mylead text-muted">Remaining tickets: {{ event.tickets_remaining|string }}</p>
+          </div>
+          <form method="post">
+            {{ oform.csrf_token()}}
+            <div class="form-group row">
+              <label for="qty" class="col-2 col-form-label">Quantity:</label>
+              <div class="col-5">
+                {{ wtf.form_field(oform.ticket_quantity, type=number, class='form-control') }}
+              </div>
+            </div>
+            <button type="submit" class="btn btn-success float-right">Checkout</button>
+          </form>
+        </div>
       </div>
     </div>
   </div>
-</div>
-{% endblock %}
+  {% endblock %}
