@@ -4,20 +4,28 @@ from datetime import datetime
 from flask import Blueprint
 from flask import send_from_directory
 from flask import current_app as app
-from flask import flash, redirect, render_template, request, session, url_for
-from flask_login import current_user, login_required, login_url 
-from sqlalchemy.orm import query
+from flask import flash, redirect, render_template, request, session, url_for, abort
+from flask_login import current_user, login_required, login_url
 from sqlalchemy import and_, or_
-from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
-from werkzeug.exceptions import NotFound
 
 from website import ALLOWED_EXTENSIONS, db
 from .forms import EventForm, CommentForm, OrderForm, SearchForm
 from .models import User, Event, Comment, Order
 from .models import BOOKED, UPCOMING, INACTIVE, CANCELLED
+from .misc import set_current_event
+
 
 bp = Blueprint('main', __name__)
+
+# error handlers for returning a custom error page when something goes wrong
+@bp.errorhandler(404)
+def not_found_error(error):
+    return render_template('404.html'), 404
+
+@bp.errorhandler(500)
+def not_found_error(error):
+    return render_template('500.html'), 500
 
 
 # checks if filename has an allowed file extension
@@ -107,11 +115,7 @@ def index():
 @bp.route('/uploads')
 def download(filename=None):
     if filename is not None:
-        try:
-            return send_from_directory(os.path.join(app.root_path, app.config["UPLOAD_FOLDER"]), filename)
-        except NotFound as nf:
-            print('file with filename %s was not found', filename)
-            return send_from_directory(os.path.join(app.root_path, 'static\\img'), 'no_image.png')
+        return send_from_directory(os.path.join(app.root_path, app.config["UPLOAD_FOLDER"]), filename)
     else:
         return send_from_directory(os.path.join(app.root_path, 'static\\img'), 'no_image.png')
     
@@ -140,13 +144,9 @@ def create_event():
         venue = form.venue.data
 
         # get address information from each input
-        street = form.street.data
-        city = form.city.data
-        state = form.state.data
-        postcode = form.postcode.data
 
         # join address information into a single entry
-        addr = ','.join([street, city, postcode, state])
+        addr = form.address.data
 
         status = form.status.data
         tickets_total = form.tickets_total.data
@@ -191,6 +191,12 @@ def booked_events():
 @bp.route('/view-details/<event_id>', methods=['GET', 'POST'])
 def view_details(event_id):
     event:Event = Event.query.filter_by(event_id=event_id).first()
+    # if event cannot be found by query, raise a not found 404 exception
+    if event is None:
+        abort(404)
+
+
+    set_current_event(event)
     cform = CommentForm()
     oform = OrderForm()
     oform.event_id = event_id
@@ -200,7 +206,7 @@ def view_details(event_id):
         new_comment = Comment(text=text, user_id=user_id, event_id=event_id, date_of_creation=datetime.now())
         db.session.add(new_comment)
         db.session.commit()
-        return redirect(url_for('main.view_details', event_id=event_id))
+        return redirect(url_for('main.view-details', event_id=event_id))
 
     if oform.is_submitted():
         if oform.validate():
@@ -221,22 +227,35 @@ def view_details(event_id):
     return render_template('view_details.html', event=event, oform=oform, cform=cform)
 
 
-@bp.route('/delete_event/<event_id>')
+@bp.route('/delete-event/<event_id>')
 @login_required
 def delete_event(event_id):
     event:Event = Event.query.filter_by(event_id=event_id).first()
-    if event is not None and event.is_owner:
+    if event is None:
+        abort(404)
+
+    if event.is_owner:
         db.session.delete(event)
         db.session.commit()
         return redirect(url_for('main.manage_events'))
     
     
-@bp.route('/edit_event/<event_id>', methods=['GET', 'POST'])
+@bp.route('/edit-event/<event_id>', methods=['GET', 'POST'])
 @login_required
 def edit_event(event_id):
     event:Event = Event.query.filter_by(event_id=event_id).first()
+    if event is None:
+        abort(404)
+
+
+    set_current_event(event)
+
     if event is not None and event.is_owner:
         form = EventForm(obj=event)
+
+        # set form mode to editing
+        form.is_editing = True
+
         form.image.data = None
         
         if form.validate_on_submit():
@@ -259,18 +278,10 @@ def edit_event(event_id):
         form.end_time.data = event.end_time.time()
         form.end_date.data = event.end_time.date()
 
-        street, city, postcode, state = event.address.split(',')
-        form.street.data = street
-        form.city.data = city
-        form.postcode.data = postcode
-        form.state.data = state
+        form.address.data = event.address
         return render_template('create_event.html', form=form)
 
 
-
-
-# function for testing any html file in templates
-@bp.route('/test-render/<file>')
-def test_render(file):
-    return render_template(file)
-
+@bp.errorhandler(404)
+def not_found_error(error):
+    return render_template('404.html'), 404

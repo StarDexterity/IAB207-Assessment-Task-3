@@ -1,18 +1,18 @@
-from flask_wtf import FlaskForm
-from flask_wtf.file import FileField
-from wtforms.fields import (
-    TextAreaField,SubmitField, StringField, PasswordField, 
-    BooleanField, IntegerField, TimeField, DateField, 
-    FloatField, SelectField
-)
-from wtforms.validators import InputRequired, Length, Email, EqualTo, ValidationError, NumberRange
-from wtforms.widgets.core import Input
 import re
-from .models import BOOKED, CANCELLED, User, Event
 from datetime import datetime
 
+from flask import session
+from flask_wtf import FlaskForm
+from flask_wtf.file import FileField
+from wtforms.fields import (BooleanField, DateField, FloatField, IntegerField,
+                            PasswordField, SelectField, StringField,
+                            SubmitField, TextAreaField, TimeField)
+from wtforms.validators import (Email, EqualTo, InputRequired, Length,
+                                ValidationError)
 
-from .models import statuses, sports
+from .misc import get_current_event
+from .models import BOOKED, CANCELLED, Event, User, sports, statuses
+
 search_sports = [
     'All',
     'Soccer',
@@ -102,17 +102,28 @@ class EventForm(FlaskForm):
 
     # address information
     venue = StringField()
-    street = StringField(validators=[InputRequired()])
-    city = StringField(validators=[InputRequired()])
-    state = StringField(validators=[InputRequired()])
-    postcode = StringField(validators=[InputRequired()])
+    address = StringField()
 
     status = SelectField(choices=statuses, validators=[InputRequired()])
     tickets_total = IntegerField(validators=[InputRequired()])
     price = FloatField(validators=[InputRequired()])
 
+    is_editing = False
+
     submit = SubmitField('Submit')
 
+
+    def validate_tickets_total(form, field):
+        event:Event = get_current_event()
+        if form.is_editing:
+            if field.data < event.tickets_sold:
+                raise ValidationError('Number must be at least {}, the number of tickets already sold.'.format(event.tickets_sold))
+
+    def validate_address(form, field):
+        if form.address.data == '' and form.venue.data == '':
+            raise ValidationError('Venue or address field required')
+        
+        
     def populate_event(self, event:Event):
         event.title = self.title.data
         event.description = self.description.data
@@ -130,14 +141,8 @@ class EventForm(FlaskForm):
         end_time = self.end_time.data
         event.end_time = datetime(end_date.year, end_date.month, end_date.day, end_time.hour, end_time.minute, end_time.second)
 
-        # get address information from each input
-        street = self.street.data
-        city = self.city.data
-        state = self.state.data
-        postcode = self.postcode.data
-
         # join address information into a single entry
-        event.addr = ','.join([street, city, postcode, state])
+        event.addr = self.address.data
 
         event.status = self.status.data
         event.price = self.price.data
@@ -149,11 +154,10 @@ class CommentForm(FlaskForm):
     text = TextAreaField(label='', validators=[InputRequired(), Length(max=400)])
 
 class OrderForm(FlaskForm):
-    event_id = 0
     ticket_quantity = IntegerField(label='', validators=[InputRequired()])
 
     def validate_ticket_quantity(form, field):
-        event:Event = Event.query.filter_by(event_id=form.event_id).first()
+        event:Event = get_current_event()
         if event.status == BOOKED:
             raise ValidationError(message='Event is fully booked')
         elif event.status == CANCELLED:
@@ -166,4 +170,6 @@ class OrderForm(FlaskForm):
 # misc test form
 class TestForm(FlaskForm):
     message = StringField()
+
+
 
