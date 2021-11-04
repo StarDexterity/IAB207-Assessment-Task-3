@@ -64,12 +64,13 @@ def register():
         pwd = form.password.data
         email=form.email_id.data
         contact_number = form.phone_no.data
+        address = form.address.data
 
 
         if error is None:
             pwd_hash = generate_password_hash(pwd)
             #create a new user model object
-            new_user = User(username=uname, password_hash=pwd_hash, email=email, contact_number=contact_number)
+            new_user = User(username=uname, password_hash=pwd_hash, email=email, contact_number=contact_number, address=address)
             db.session.add(new_user)
             db.session.commit()
             flash("Registered user successfully")

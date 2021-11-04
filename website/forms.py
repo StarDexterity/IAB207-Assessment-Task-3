@@ -47,7 +47,8 @@ class RegisterForm(FlaskForm):
     email_id = StringField("Email Address", validators=[Email("Please enter a valid email")])
 
     phone_no = StringField('Phone number', validators=[InputRequired("Please enter a phone number")])
-    
+    address = StringField('Address', validators=[InputRequired("Please enter a address")])
+
     #linking two fields - password should be equal to data entered in confirm
     password=PasswordField("Password", validators=[InputRequired(), EqualTo('confirm', message="Passwords should match"), Length(min=8, message='Password must be atleast 8 characters long')])
     confirm = PasswordField("Confirm Password")
