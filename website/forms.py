@@ -13,14 +13,7 @@ from wtforms.validators import (Email, EqualTo, InputRequired, Length,
 from .misc import get_current_event
 from .models import BOOKED, CANCELLED, Event, User, sports, statuses
 
-search_sports = [
-    'All',
-    'Soccer',
-    'Football',
-    'Netball',
-    'Basketball',
-    'Hockey'    
-]
+
 
 #creates the login information
 class LoginForm(FlaskForm):
@@ -33,7 +26,7 @@ class LoginForm(FlaskForm):
     submit = SubmitField("Login")
 
 class SearchForm(FlaskForm):
-    category = SelectField(choices=search_sports, validators=[InputRequired()])
+    category = SelectField(choices=['All'] + sports, validators=[InputRequired()])
     search=StringField("Search")
 
     submit = SubmitField("Search")
@@ -88,7 +81,7 @@ NOTE:
 '''
 class EventForm(FlaskForm):
     # title of the event, thumbnail/details image, a description of the event, and the sport the event is
-    title = StringField(validators=[InputRequired()])
+    title = StringField(validators=[InputRequired(), Length(max=25)])
     image = FileField(validators=[])
     description = TextAreaField(validators=[InputRequired(), Length(min=300)])
     sport = SelectField(choices=sports, validators=[InputRequired()])

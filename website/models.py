@@ -21,7 +21,8 @@ sports = [
     'Football',
     'Netball',
     'Basketball',
-    'Hockey'    
+    'Hockey',
+    'Other'   
 ]
 
 # list of statuses used by the application
