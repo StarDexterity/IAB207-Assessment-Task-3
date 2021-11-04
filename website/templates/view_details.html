@@ -41,7 +41,7 @@
         <h3 class="mytitle centered">About the event</h3>
 
 
-        <p style="white-space: pre-line">
+        <p style="white-space: pre-line; overflow-wrap: break-word;">
           {{ event.description }}
         </p>
       </div>
@@ -53,8 +53,8 @@
 
         <div class="div-1"></div>
         <p><strong>Location</strong></p>
-        <p>{{ event.venue }}</p>
-        <p>{{ event.address }}</p>
+        <p style="overflow-wrap: break-word;">{{ event.venue }}</p>
+        <p style="overflow-wrap: break-word;">{{ event.address }}</p>
         <br>
         <p><strong>Starting</strong></p>
         <p>{{ event.formatted_time(event.start_time) }}</p>

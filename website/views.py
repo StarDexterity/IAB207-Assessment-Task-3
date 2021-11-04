@@ -46,7 +46,7 @@ def index():
         events = []
 
         
-        # if category is all make this query else make a query with an additional check for category
+        # if category is all make query for search parameter only else make a query with an additional check for category
         s1 = None
         if category == ALL:
             s1:Event = Event.query.filter(or_(Event.title.like(search), User.username.like(search))).all()
@@ -169,7 +169,7 @@ def view_details(event_id):
         new_comment = Comment(text=text, user_id=user_id, event_id=event_id, date_of_creation=datetime.now())
         db.session.add(new_comment)
         db.session.commit()
-        return redirect(url_for('main.view-details', event_id=event_id))
+        return redirect(url_for('main.view_details', event_id=event_id))
 
     if oform.is_submitted():
         if oform.validate():

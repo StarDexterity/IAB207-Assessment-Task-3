@@ -8,7 +8,7 @@ from wtforms.fields import (BooleanField, DateField, FloatField, IntegerField,
                             PasswordField, SelectField, StringField,
                             SubmitField, TextAreaField, TimeField)
 from wtforms.validators import (Email, EqualTo, InputRequired, Length,
-                                ValidationError)
+                                ValidationError, NumberRange)
 
 from .misc import get_current_event
 from .models import BOOKED, CANCELLED, ALL, Event, User, sports, statuses
@@ -93,12 +93,12 @@ class EventForm(FlaskForm):
     end_date = DateField(validators=[InputRequired()])
 
     # address information
-    venue = StringField()
-    address = StringField()
+    venue = StringField(validators=[Length(max=50)])
+    address = StringField(validators=[Length(max=100)])
 
     status = SelectField(choices=statuses, validators=[InputRequired()])
-    tickets_total = IntegerField(validators=[InputRequired()])
-    price = FloatField(validators=[InputRequired()])
+    tickets_total = IntegerField(validators=[InputRequired(), NumberRange(min=1)])
+    price = FloatField(validators=[InputRequired(), NumberRange(min=0)])
 
     is_editing = False
 
@@ -106,8 +106,8 @@ class EventForm(FlaskForm):
 
 
     def validate_tickets_total(form, field):
-        event:Event = get_current_event()
         if form.is_editing:
+            event:Event = get_current_event()
             if field.data < event.tickets_sold:
                 raise ValidationError('Number must be at least {}, the number of tickets already sold.'.format(event.tickets_sold))
 
@@ -143,10 +143,10 @@ class EventForm(FlaskForm):
     
 
 class CommentForm(FlaskForm):
-    text = TextAreaField(label='', validators=[InputRequired(), Length(max=400)])
+    text = TextAreaField(label='', validators=[InputRequired(), Length(min=1, max=400)])
 
 class OrderForm(FlaskForm):
-    ticket_quantity = IntegerField(label='', validators=[InputRequired()])
+    ticket_quantity = IntegerField(label='', validators=[InputRequired(), NumberRange(min=1)])
 
     def validate_ticket_quantity(form, field):
         event:Event = get_current_event()
@@ -157,11 +157,3 @@ class OrderForm(FlaskForm):
         elif field.data > event.tickets_remaining:
             raise ValidationError(message='Ticket quantity must be at most {}'.format(event.tickets_remaining))
         
-
-
-# misc test form
-class TestForm(FlaskForm):
-    message = StringField()
-
-
-
