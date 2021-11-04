@@ -38,7 +38,7 @@ def allowed_file(filename):
 def index():
     form = SearchForm()
     category = form.category.data
-    search = form.search.data
+    search = '%'
     error = None
     anything_found = 'Nothing is currently within the application please add an event or wait for new events to be added'
     passed = 0
@@ -46,8 +46,8 @@ def index():
     events = Event.query.all()
 
     c1:Event = Event.query.filter_by(sport=category).first()
-    s1:Event = Event.query.filter_by(title=search).first()
-    s2:User = User.query.filter_by(username=search).first()
+    s1:Event = Event.query.filter(or_(Event.title.like(search), User.username.like(search))).first()
+    s2:User = User.query.filter(User.username.like(search)).first()
 
     events = Event.query.all()
 
