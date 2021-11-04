@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block title %}Index{% endblock %}
+
+{% block content %}
+<h1>Resource not found</h1>
+<a href="{{ url_for('main.index') }}">Click here to return to homepage</a>
+{% endblock %}

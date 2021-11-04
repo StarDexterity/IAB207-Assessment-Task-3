@@ -1,6 +1,7 @@
 from . import db
 from flask_login import UserMixin, current_user
 from datetime import datetime
+from flask import session
     
 
 days_of_week = ('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday')
@@ -113,6 +114,10 @@ class Event(db.Model):
     def tickets_remaining(self) -> int:
         return self.tickets_total - self.tickets_sold
 
+
+        
+        
+        
     def formatted_time(self, time:datetime):
         return '{}, {} {} {} at {}'.format(get_day(time.weekday()), 
                                                 time.day, 
@@ -123,6 +128,7 @@ class Event(db.Model):
 	
     def __repr__(self): #string print method
         return "<Name: {}>".format(self.title)
+
 
 class Order(db.Model):
     __tablename__ = 'orders'

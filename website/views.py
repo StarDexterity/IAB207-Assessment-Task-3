@@ -5,7 +5,7 @@ from flask import Blueprint
 from flask import send_from_directory
 from flask import current_app as app
 from flask import flash, redirect, render_template, request, session, url_for
-from flask_login import current_user, login_required, login_url 
+from flask_login import current_user, login_required, login_url
 import flask_login
 from sqlalchemy.orm import query
 from sqlalchemy import and_, or_
@@ -17,6 +17,8 @@ from website import ALLOWED_EXTENSIONS, db
 from .forms import EventForm, CommentForm, OrderForm, SearchForm
 from .models import User, Event, Comment, Order
 from .models import BOOKED, UPCOMING, INACTIVE, CANCELLED
+from .misc import set_current_event
+
 
 bp = Blueprint('main', __name__)
 
@@ -134,13 +136,9 @@ def create_event():
         venue = form.venue.data
 
         # get address information from each input
-        street = form.street.data
-        city = form.city.data
-        state = form.state.data
-        postcode = form.postcode.data
 
         # join address information into a single entry
-        addr = ','.join([street, city, postcode, state])
+        addr = form.address.data
 
         status = form.status.data
         tickets_total = form.tickets_total.data
@@ -185,6 +183,12 @@ def booked_events():
 @bp.route('/view-details/<event_id>', methods=['GET', 'POST'])
 def view_details(event_id):
     event:Event = Event.query.filter_by(event_id=event_id).first()
+    # if event cannot be found by query, raise a not found 404 exception
+    if event is None:
+        abort
+
+
+    set_current_event(event)
     cform = CommentForm()
     oform = OrderForm()
     oform.event_id = event_id
@@ -194,7 +198,7 @@ def view_details(event_id):
         new_comment = Comment(text=text, user_id=user_id, event_id=event_id, date_of_creation=datetime.now())
         db.session.add(new_comment)
         db.session.commit()
-        return redirect(url_for('main.view_details', event_id=event_id))
+        return redirect(url_for('main.view-details', event_id=event_id))
 
     if oform.is_submitted():
         if oform.validate():
@@ -215,22 +219,35 @@ def view_details(event_id):
     return render_template('view_details.html', event=event, oform=oform, cform=cform)
 
 
-@bp.route('/delete_event/<event_id>')
+@bp.route('/delete-event/<event_id>')
 @login_required
 def delete_event(event_id):
     event:Event = Event.query.filter_by(event_id=event_id).first()
-    if event is not None and event.is_owner:
+    if event is None:
+        raise NotFound
+
+    if event.is_owner:
         db.session.delete(event)
         db.session.commit()
         return redirect(url_for('main.manage_events'))
     
     
-@bp.route('/edit_event/<event_id>', methods=['GET', 'POST'])
+@bp.route('/edit-event/<event_id>', methods=['GET', 'POST'])
 @login_required
 def edit_event(event_id):
     event:Event = Event.query.filter_by(event_id=event_id).first()
+    if event is None:
+        raise NotFound
+
+
+    set_current_event(event)
+
     if event is not None and event.is_owner:
         form = EventForm(obj=event)
+
+        # set form mode to editing
+        form.is_editing = True
+
         form.image.data = None
         
         if form.validate_on_submit():
@@ -253,18 +270,6 @@ def edit_event(event_id):
         form.end_time.data = event.end_time.time()
         form.end_date.data = event.end_time.date()
 
-        street, city, postcode, state = event.address.split(',')
-        form.street.data = street
-        form.city.data = city
-        form.postcode.data = postcode
-        form.state.data = state
+        form.address.data = event.address
         return render_template('create_event.html', form=form)
-
-
-
-
-# function for testing any html file in templates
-@bp.route('/test-render/<file>')
-def test_render(file):
-    return render_template(file)
 

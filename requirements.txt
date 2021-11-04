@@ -3,6 +3,5 @@ Flask_login
 Flask_Sqlalchemy
 Flask-Bootstrap
 Flask_wtf
-Captcha
 Wtforms
 Email-Validator
